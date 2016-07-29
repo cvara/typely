@@ -1,0 +1,118 @@
+.typely-container {
+
+
+	.post-title,
+	.post-subtitle {
+	    max-width: 624px;
+	}
+
+	.post-title {
+		margin: 10px 0 18px;
+		min-height: 66px;
+	}
+
+	.post-subtitle {
+	    margin: 10px 0 18px;
+	    min-height: 36px;
+	}
+
+	.post-content {
+	    -webkit-transition: margin 0.2s ease-out 0s;
+	    -moz-transition: margin 0.2s ease-out 0s;
+	    -o-transition: margin 0.2s ease-out 0s;
+	    transition: margin 0.2s ease-out 0s;
+	}
+
+	.post-content[data-length="0"] {
+	    margin: 0 0 200px 0;
+	}
+
+	.post-content h1,
+	.post-content h2 {
+		font-family: 'Roboto Condensed', sans-serif;
+		font-weight: 400;
+	}
+
+	.post-content h1 {
+	    font-size: 38px;
+	    margin: 60px 0 20px;
+
+	}
+
+	.post-content h2 {
+	    margin: 60px 0 30px 0;
+	}
+
+	.post-content p,
+	.post-content ,
+	.post-content ol,
+	.post-content ul {
+	    font-family: 'Roboto Slab', sans-serif;
+	    font-size: 19px;
+	    font-style: normal;
+	    font-weight: 300;
+	    min-height: 20pt;
+	    line-height: 20pt;
+	    color: #333333;
+	    text-indent: 0px;
+	    margin: 0 0 35px 0;
+	    word-wrap: break-word;
+	    text-align: left;
+	}
+
+	.post-content b,
+	.post-content strong {
+		font-family: 'Roboto Slab', sans-serif;
+		font-weight: 700;
+	}
+
+	.post-content i,
+	.post-content em {
+		font-family: 'Roboto Slab', sans-serif;
+		font-style: italic;
+	}
+
+	.post-content ol {
+	    padding: 0;
+	    margin: 0;
+	    counter-reset: item;
+	}
+
+	.post-content ul {
+	    list-style-type: disc;
+	    padding-left: 20px;
+	}
+
+	.post-content ol,
+	.post-content ul {
+		position: relative;
+	}
+
+	.post-content ol li {
+	    display: block;
+	    margin-bottom: 15px;
+	}
+
+	.post-content ul li {
+	    margin-bottom: 15px;
+	}
+
+	.post-content ol li:last-child,
+	.post-content ul li:last-child {
+	    margin-bottom: 30px;
+	}
+
+	.post-content ol li:before {
+	    font-size: 15px;
+	    display: inline-block;
+	    content: counter(item) " ";
+	    counter-increment: item;
+	    width: 20px;
+	}
+
+	.post-content > hr {
+		margin: 0 auto 15px auto;
+		color: #b3b3b3;
+		width: 100px;
+	}
+}

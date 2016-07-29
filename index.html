@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Demo</title>
+		<link rel="stylesheet" href="dist/css/typely.css">
+		<style>
+			body {
+				max-width: 720px;
+				padding: 20px;
+				margin: auto;
+			}
+			#demo-container {
+				margin: auto;
+			}
+		</style>
+	</head>
+	<body>
+		This is a simple demo
+
+		<div id="demo-container"></div>
+
+		<script type="text/javascript" src="dist/js/typely.js"></script>
+		<script type="text/javascript">
+			var Typely = window.Typely;
+			var typely = new Typely({
+				container: '#demo-container'
+			});
+		</script>
+	</body>
+</html>
