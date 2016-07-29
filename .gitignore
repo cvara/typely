@@ -9,3 +9,4 @@ node_modules
 *.7z
 *.TMP
 mocha
+.babel-cache
