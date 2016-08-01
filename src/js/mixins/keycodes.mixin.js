@@ -8,5 +8,6 @@ export default {
 	deleteKey: 46,
 	enterKey: 13,
 	spaceKey: 32,
-	tabKey: 9
+	tabKey: 9,
+	escKey: 27
 };
