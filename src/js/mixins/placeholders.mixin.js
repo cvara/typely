@@ -8,18 +8,24 @@ export default {
 		content: 'Start typing your post'
 	},
 
+	placeholderHandlersRegistered: false,
+
 	ui: {
 		placeholder: '[data-placeholder]'
 	},
 
 	events: {
-		'keydown @ui.placeholder'  : 'handlePlaceholderChange',
-		'keyup @ui.placeholder'    : 'handlePlaceholderChange',
-		'keypress @ui.placeholder' : 'handlePlaceholderChange',
-		'change @ui.placeholder'   : 'handlePlaceholderChange',
-		'input @ui.placeholder'    : 'handlePlaceholderChange',
 		'blur @ui.placeholder'     : 'handlePlaceholderBlur',
 		'click @ui.placeholder'    : 'handlePlaceholderClick'
+	},
+
+	onAttach: function() {
+		// Init placeholders
+		this.initPlaceholders();
+	},
+
+	onBeforeDestroy: function() {
+		this.ui.placeholder.off();
 	},
 
 	initPlaceholders: function() {
@@ -29,10 +35,10 @@ export default {
 		this.ui.title.filter('[data-length=0]').html(this.placeholders.title);
 		this.ui.subtitle.filter('[data-length=0]').html(this.placeholders.subtitle);
 		this.ui.content.filter('[data-length=0]').children('p:first-child').html(this.placeholders.content);
+		this.ui.content.blur().children().blur();
 	},
 
 	handlePlaceholderChange: function(e) {
-
 		let self = this;
 
 		let placeholder = $(e.currentTarget);
@@ -85,6 +91,18 @@ export default {
 	},
 
 	handlePlaceholderClick: function(e) {
+		this.registerHandlers();
+		this.focusAndEmpty(e);
+	},
+
+	registerHandlers: function() {
+		if (!this.placeholderHandlersRegistered) {
+			this.ui.placeholder.on('keydown keyup keypress change input', this.handlePlaceholderChange.bind(this));
+			this.placeholderHandlersRegistered = true;
+		}
+	},
+
+	focusAndEmpty: function(e) {
 		let initiator = $(e.target);
 		// console.log(e);
 		// console.log('Am I the first child? ', $target.is('p.post-section:first-child'));
@@ -99,7 +117,6 @@ export default {
 		// }
 
 		let placeholder = $(e.currentTarget);
-		let textLength = $.trim(placeholder.text()).length;
 
 		let focusEl;
 		if (placeholder.hasClass('post-content')) {

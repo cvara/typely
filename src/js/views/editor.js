@@ -42,7 +42,6 @@ var Editor = ItemView.extend({
 
 	onAttach: function() {
 		this.createFirstSection();
-		this.initPlaceholders();
 	},
 
 	createFirstSection: function() {
