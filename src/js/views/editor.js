@@ -42,7 +42,8 @@ const Editor = LayoutView.extend({
 		'keyup @ui.content'   : 'handleKeyupOnContent',
 		'input @ui.content'   : 'updateSections',
 		'change @ui.content'  : 'updateSections',
-		'mouseup @ui.content' : 'handleMouseupOnContent'
+		'mouseup @ui.content' : 'handleMouseupOnContent',
+		'paste .post-section' : 'handlePaste'
 	},
 
 	childEvents: {
@@ -241,6 +242,7 @@ const Editor = LayoutView.extend({
 		this.guardImportantKeys(e); // for sections
 		this.detectShortcuts(e);
 		this.properlyClearTooltip(e);
+		this.detectListInput(e);
 	},
 
 	handleKeyupOnContent: function(e) {
@@ -330,6 +332,77 @@ const Editor = LayoutView.extend({
 		}
 	},
 
+
+	detectListInput: function(e) {
+
+		// Only care for space & enter
+		if (e.keyCode !== this.enterKey && e.keyCode !== this.spaceKey) {
+			return true;
+		}
+
+		const el = helper.getSelectionParentElement();
+
+		// enter was pressed from inside an empty list element
+		if (el.nodeName === 'LI' && e.keyCode === this.enterKey && el.textContent.length === 0) {
+			// prevent key-press default behaviour
+			e.preventDefault();
+			// we are inside the last <li> of the list
+			if ($(el).next('li').length === 0) {
+				// get list element
+				const parent = el.parentNode;
+				// remove current list item
+				$(el).remove();
+				// insert new paragraph after list section (execCommand behaves unexpectedly in Safari)
+				this.createEmptySection(parent, true);
+			}
+			// we are in the middle of the list
+			else {
+				/**
+				 * @TODO: split the list into two new lists seperated by <p> and give focus on <p>
+				 */
+			}
+			return;
+		}
+
+		// enter/space was pressed at the begining of a section, after '1.','*','-' or '+'
+		if (/^1.$|^\*$|^\-$|^\+$/.test(el.textContent)) {
+
+			let $listEl, $listParentEl;
+			// prevent key-press default behaviour
+			event.preventDefault();
+			// store the name of the section (it will be deleted after execCommand)
+			const name = $(el).attr('name');
+			// ordered list
+			if(/^1.$/.test(el.textContent)) {
+				// delete user input '1.' and convert section to list
+				document.execCommand('delete',false,null);
+				document.execCommand('delete',false,null);
+				document.execCommand('insertOrderedList',false,null);
+			}
+			// unordered list
+			else {
+				// delete user input '*', '-' and convert section to list
+				document.execCommand('delete',false,null);
+				document.execCommand('insertUnorderedList',false,null);
+			}
+
+			// Chrome/Safari place newly created lists inside parent (unexpected)
+			$listEl = $(helper.getSelectionParentElement().parentNode);
+			// Chrome/Safari also wrap list item contents inside <font> elements (only if starting with a list)
+			if ($listEl[0].nodeName === 'LI') {
+				$listEl.html($listEl.children().html());
+				$listEl = $listEl.parent();
+			}
+			$listParentEl = $listEl.parent();
+			if (!$listParentEl.hasClass('post-content')) {
+				$listEl.insertBefore(el);
+				$(el).remove();
+			}
+			// transfer saved name to newly created ol section
+			$listEl.attr('name',name ).addClass('post-section');
+			helper.selectElementContents($listEl.children('li').last()[0]);
+		}
+	},
 
 
 	onPaste: function() {
@@ -692,6 +765,46 @@ const Editor = LayoutView.extend({
 
 		// selection dimensions may have changed
 		tooltipView.triggerMethod('update:position');
+	},
+
+	handlePaste: function(e) {
+
+		var container = e.target;
+		// chrome enters <br> tags
+		while (container.nodeName === 'BR') {
+			container = container.parentNode;
+		}
+
+		// capture the content to be pasted as plain text
+		var data = e.originalEvent.clipboardData.getData('Text');
+
+		// console.log('paste happened');
+		// console.log('event: ', e);
+		// console.log('data: ', data);
+		// console.log('container: ', container);
+
+		// save caret position before paste
+		this.saveSelection();
+
+		// replace existing text with new, which contains all pasted content
+		helper.deleteSelection();
+		var pos = helper.getCaretCharacterOffsetWithin(container, true);
+		var content = $(container).html();
+		var newContent = content.substr(0, pos) + data + content.substr(pos);
+
+		// console.log('pos: ', pos);
+		// console.log('new content: ', newContent);
+
+		$(container).html(newContent);
+
+		// restore caret position after paste
+		this.restoreSelection();
+
+		// prevent paste default behaviour & bubbling
+		e.preventDefault();
+		e.stopPropagation();
+		// return false;
+
 	}
 
 });
