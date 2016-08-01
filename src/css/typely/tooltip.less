@@ -1,63 +1,42 @@
 .typely-tooltip {
 
-	height: 65px;
 	position: absolute;
-	width: 300px;
-	z-index: 49;
-	/* prevent tooltip buttons from being selected unintentionally */
+	display: inline-block;
+	z-index: @zindex-tooltip;
+	height: @tooltip-toggle-height;
 	.user-select(none);
-
 	.transition(all 0.2s ease-out 0s);
 
 
-	.posting-tooltip-arrow {
-	    height: 12px;
-	    width: 100%;
-	    text-align: center;
-	    position: relative;
-	}
-
-	.posting-tooltip-arrow .icon {
-	    background-image: url(http://www.noowit.com/static/img/posting_images/posting-icons-2.png);
-	    background-position: -6px -500px;
-	    background-repeat: no-repeat;
-	    display: inline-block;
-	    height: 100%;
-	    left: 0;
-	    margin: auto;
-	    position: absolute;
-	    right: 0;
-	    top: 0;
-	    width: 30px;
-	}
-
-	ul.posting-tooltip {
-	    background-color: #333333;
-	    border-radius: 5px 5px 5px 5px;
-	    height: 50px;
+	.toggle-list {
+		margin-bottom: 0;
+		padding: 0;
+		display: inline-block;
+	    background-color: @tooltip-bg;
+	    border-radius: @tooltip-border-radius;
+		box-shadow: @tooltip-box-shadow;
 	    list-style-type: none;
-	    width: 100%;
-	    box-shadow: 0 0 8px 0 #000000;
-	    margin-bottom: 0;
-	    padding: 0;
 
 		> li {
 			float: left;
-		    width: 50px;
-		    height: 100%;
+		    width: @tooltip-toggle-width;
+		    height: @tooltip-toggle-height;
 		    cursor: pointer;
 		    text-align: center;
-			padding: 10px;
-			color: #fff;
+			color: @tooltip-color;
+
+			> i {
+				line-height: @tooltip-toggle-height;
+			}
 
 			&.active {
-				background: #656565; /* Old browsers */
-				border-right: 1px solid #666666;
-				border-left: 1px solid #666666;
+				background: @tooltip-bg-active;
+				color: @tooltip-color-active;
 			}
 
 			&:hover {
-				background: #464646;
+				background: @tooltip-bg-hover;
+				color: @tooltip-color-hover;
 			}
 
 			&:last-child {
@@ -72,20 +51,18 @@
 	}
 
 	.url-input {
-		background-color: #333333;
-		border-radius: 5px 5px 5px 5px;
-		color: white;
-		height: 50px;
+		background-color: @tooltip-bg;
+		border-radius: @tooltip-border-radius;
+		color: @tooltip-color;
+		height: @tooltip-toggle-height;
 		left: 0;
-		padding: 10px 0 10px 10px;
-		position: absolute;
-		top: 0;
+		padding: 10px 45px 10px 10px;
 		width: 100%;
+		position: relative;
 
 		.close-button {
 		    cursor: pointer;
 		    float: left;
-		    font-family: 'Roboto',sans-serif;
 		    font-size: 12pt;
 		    font-style: normal;
 		    font-weight: 400;
@@ -93,10 +70,13 @@
 		    text-align: center;
 		    width: 45px;
 		    padding-top: 3px;
+			position: absolute;
+			right: 0;
+			top: 0;
+			line-height: @tooltip-toggle-height;
 		}
 
 		.input-field {
-		    font-family: 'Roboto',sans-serif;
 		    font-size: 10pt;
 		    font-style: normal;
 		    font-weight: 400;
@@ -107,35 +87,28 @@
 		    float: left;
 		    height: 100%;
 		    padding: 0 10px;
-		    width: 240px;
+		    width: 100%;
 		}
 	}
 
-	// Corrections for special types of tooltips
-	&.quoteTooltip {
-		width: 150px;
+	.tooltip-arrow {
+	    height: @tooltip-arrow-size;
+	    width: 100%;
+	    position: absolute;
+		top: 100%;
 
-		.toggle-h1,
-		.toggle-h2,
-		.toggle-italic {
-			display: none;
-		}
-		.url-input .input-field {
-		    width: 90px;
-		}
-	}
-
-	&.listTooltip {
-		width: 150px;
-
-		.toggle-h1,
-		.toggle-h2,
-		.toggle-quote {
-			display: none;
-		}
-
-		.url-input .input-field {
-		    width: 90px;
+		.icon {
+			width: 0;
+			height: 0;
+			border-left: @tooltip-arrow-size solid transparent;
+			border-right: @tooltip-arrow-size solid transparent;
+			border-top: @tooltip-arrow-size solid @tooltip-bg;
+			display: inline-block;
+			position: absolute;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    margin: auto;
 		}
 	}
 }

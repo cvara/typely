@@ -470,7 +470,7 @@ const Editor = LayoutView.extend({
 		this.clearTooltip();
 	},
 
-	showTooltip: function(customClass) {
+	showTooltip: function({disableFormats = []} = {}) {
 
 		var range = helper.getFirstRange();
 
@@ -486,7 +486,7 @@ const Editor = LayoutView.extend({
 	    this.saveSelection();
 
 		var tooltipView = new TooltipView({
-			customClass: customClass,
+			disableFormats: disableFormats,
 			selectionFormat: selectionFormat
 		});
 
@@ -562,7 +562,9 @@ const Editor = LayoutView.extend({
 			return false;
 		}
 		if (parentEl.nodeName === 'LI' || parentEl.parentNode.nodeName === 'LI') {
-			this.showTooltip(this.listTooltipClass);
+			this.showTooltip({
+				disableFormats: ['h1', 'h2', 'em']
+			});
 			return false;
 		}
 		if (/post-content/.test(parentEl.className)) {
@@ -572,7 +574,9 @@ const Editor = LayoutView.extend({
 			return false;
 		}
 		if (parentEl.nodeName === 'BLOCKQUOTE' ) {
-			this.showTooltip(this.quoteTooltipClass);
+			this.showTooltip({
+				disableFormats: ['h1', 'h2', 'blockquote']
+			});
 			return false;
 		}
 		this.showTooltip();

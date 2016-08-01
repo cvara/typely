@@ -1,4 +1,4 @@
-<ul class="toggle-list posting-tooltip">
+<ul class="toggle-list">
 
 	<li class="toggle <%= selectionFormat.indexOf('b') !== -1 ? 'active' : '' %>"
 		data-format="strong">
@@ -31,13 +31,11 @@
 	</li>
 </ul>
 
-
-<div class="posting-tooltip-arrow">
-	<span class="icon"></span>
-</div>
-
-
 <div class="url-input hidden">
 	<input class="input-field" placeholder="Insert Link">
 	<div class="close-button">Ok!</div>
+</div>
+
+<div class="tooltip-arrow">
+	<span class="icon"></span>
 </div>

@@ -33,8 +33,13 @@ const Tooltip = ItemView.extend({
 		};
 	},
 
+	onRender: function() {
+		this.handleDisabledFormats();
+	},
+
 	onAttach: function() {
 		this.setPosition();
+		this.setWidth();
 		this.detectClickouts();
 		this.repositionOnWindowResize();
 	},
@@ -104,6 +109,12 @@ const Tooltip = ItemView.extend({
 		}
 	},
 
+	setWidth: function() {
+		this.$el.css({
+			width : this.$el.outerWidth()
+		});
+	},
+
 	repositionOnWindowResize: function() {
 		$(window).on('resize.' + this.cid, _.throttle(() => {
 			this.setPosition();
@@ -130,6 +141,12 @@ const Tooltip = ItemView.extend({
 		const toggle = this.ui.toggle.filter('[data-toggle="a"]');
 		console.log('submitUrl:', url);
 		this.triggerMethod('tooltip:toggle:clicked', toggle, 'a', false, url);
+	},
+
+	handleDisabledFormats: function() {
+		_.each(this.getOption('disableFormats'), (format) => {
+			this.ui.toggle.filter(`[data-format=${format}]`).addClass('hidden');
+		});
 	}
 });
 
