@@ -13,14 +13,6 @@ import rangy from 'rangy-core';
 import rangySelection from 'rangy-selection';
 
 
-/*
-	Editor
-
-	triggers on self:
-
-	* `sections:changed`
-
-*/
 const Editor = LayoutView.extend({
 
 	template: editorTpl,
@@ -103,7 +95,7 @@ const Editor = LayoutView.extend({
 		return section;
 	},
 
-	renameDuplicates: function() {
+	renameDuplicateSections: function() {
 		var sections = this.ui.content.children(this.sectionSelector);
 
 		// handle the case where the browser gives name to new section (there will be duplicates)
@@ -124,7 +116,7 @@ const Editor = LayoutView.extend({
 		}
 	},
 
-	nameTheUnnamed: function() {
+	nameUnnamedSections: function() {
 		var sections = this.ui.content.children(this.sectionSelector);
 
 		var unnamedSections = sections.filter(':not([name])').addClass('post-section');
@@ -150,10 +142,10 @@ const Editor = LayoutView.extend({
 				if (newNumOfSections > this.numOfSections) {
 					console.info('sections added.');
 					// handle the case where the browser gives name to new section (there will be duplicates)
-					this.renameDuplicates();
+					this.renameDuplicateSections();
 					// handle the case where the browser creates an unnamed/un-classed section
 					// (e.g. after pressing enter from inside an empty paragraph)
-					this.nameTheUnnamed();
+					this.nameUnnamedSections();
 				}
 
 				// sections were deleted

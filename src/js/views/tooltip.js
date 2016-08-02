@@ -7,6 +7,7 @@ import KeycodesMixin from 'mixins/keycodes.mixin';
 
 
 const Tooltip = ItemView.extend({
+	
 	template: tooltipTpl,
 
 	ui: {
@@ -79,10 +80,8 @@ const Tooltip = ItemView.extend({
 	detectClickouts: function() {
 		$(document).on('mousedown.' + this.cid, (e) => {
 		    const container = this.$el;
-		    if (!container.is(e.target) // if the target of the click isn't the container...
-		        &&
-		        container.has(e.target).length === 0) // ... nor a descendant of the container
-		    {
+			 // if the target of the click isn't the container nor a descendant of the container
+		    if (!container.is(e.target) && container.has(e.target).length === 0) {
 		        this.triggerMethod('tooltip:click:out');
 		    }
 		});
@@ -139,7 +138,6 @@ const Tooltip = ItemView.extend({
 	submitUrl: function() {
 		const url = this.ui.urlInputField.val();
 		const toggle = this.ui.toggle.filter('[data-toggle="a"]');
-		console.log('submitUrl:', url);
 		this.triggerMethod('tooltip:toggle:clicked', toggle, 'a', false, url);
 	},
 
