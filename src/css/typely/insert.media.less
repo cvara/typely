@@ -1,0 +1,71 @@
+.typely-insert-media {
+
+    background-color: white;
+    border-radius: 4px 4px 4px 4px;
+    height: 26px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 95px;
+    z-index: 3;
+
+	.show-overlay-button {
+	    border: 1px solid #CCCCCC;
+	    border-radius: 5px 5px 5px 5px;
+	    color: #808080;
+	    cursor: pointer;
+	    font-family: 'Roboto',sans-serif;
+	    font-size: 13px;
+	    font-style: normal;
+	    font-weight: 400;
+	    height: 100%;
+	    padding-top: 1px;
+	    text-align: center;
+	    width: 100%;
+	    .user-select(none);
+
+		&:hover {
+			color: #333333;
+			border: 1px solid #808080;
+		}
+	}
+
+
+	.add-media-overlay-wrapper {
+	    width: 200px;
+	    height: 65px;
+	    position: absolute;
+	    bottom: 100%;
+	    left: -53px;
+	    z-index: 49;
+
+		ul.add-media-overlay {
+			&:extend(.typely-tooltip all);
+			> li {
+			    background-image: url(http://www.noowit.com/static/img/posting_images/posting-icons-2.png);
+			    background-repeat: no-repeat;
+
+				&:not(:last-child) {
+				    border-right: 1px solid #4F4F4F;
+				}
+
+				&.add-image-button {
+				    background-position: 0px -407px;
+				}
+
+				&.add-video-button {
+				    background-position: 0px -370px;
+				}
+
+				&.add-slideshow-button {
+				    background-position: -5px -444px;
+				}
+
+				&.add-audio-button {
+					background-image: url(http://www.noowit.com/static/img/posting_images/speaker_2.png);
+					background-position: center center;
+				}
+			}
+		}
+	}
+}

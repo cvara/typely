@@ -10,6 +10,7 @@ import KeycodesMixin from 'mixins/keycodes.mixin';
 import UidMixin from 'mixins/uid.mixin';
 import PlaceholdersMixin from 'mixins/placeholders.mixin';
 import SectionsMixin from 'mixins/sections.mixin';
+import MediaMixin from 'mixins/media.mixin';
 import rangy from 'rangy-core';
 import rangySelection from 'rangy-selection';
 
@@ -21,7 +22,8 @@ const Editor = LayoutView.extend({
 	className: 'typely-container',
 
 	regions: {
-		tooltip: '.tooltip-region'
+		tooltip: '.tooltip-region',
+		insertMedia: '.insert-media-region'
 	},
 
 	ui: {
@@ -680,6 +682,6 @@ const Editor = LayoutView.extend({
 
 });
 
-Cocktail.mixin(Editor, KeycodesMixin, UidMixin, PlaceholdersMixin, SectionsMixin);
+Cocktail.mixin(Editor, KeycodesMixin, UidMixin, PlaceholdersMixin, SectionsMixin, MediaMixin);
 
 export default Editor;
