@@ -13,12 +13,15 @@ const InsertMediaView = ItemView.extend({
 		showTooltipButton: '.show-tooltip-button',
 		tooltip: '.tooltip',
 		tooltipList: '.tooltip .tooltip-list',
-		tooltipListItem: '.tooltip .tooltip-list li'
+		tooltipListItem: '.tooltip .tooltip-list li',
+		mediaType: '[data-media-type]'
 	},
 
 	events: {
 		'mouseup @ui.showTooltipButton': 'killEvent',
-		'mousedown @ui.showTooltipButton': 'handleTooltipButtonClick'
+		'mousedown @ui.showTooltipButton': 'handleTooltipButtonClick',
+		'mouseup @ui.mediaType': 'killEvent',
+		'mousedown @ui.mediaType': 'handleMediaTypeClick'
 	},
 
 	initialize: function() {
@@ -35,7 +38,6 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	onClickOut: function() {
-		console.log('click out');
 		this.destroy();
 	},
 
@@ -43,7 +45,8 @@ const InsertMediaView = ItemView.extend({
 		this.destroy();
 	},
 
-	// TODO: instead of triggering `postHeightChanged`, just call positionSelf()
+	// TODO: instead of triggering `postHeightChanged`,
+	//       just call positionSelf()
 	positionSelf: function() {
 		const hookEl = this.hookEl;
 
@@ -104,6 +107,12 @@ const InsertMediaView = ItemView.extend({
 		} else {
 			this.triggerMethod('media:tooltip:shown');
 		}
+	},
+
+	handleMediaTypeClick: function(e) {
+		this.killEvent(e);
+		const which = $(e.currentTarget).attr('data-media-type');
+		console.log(which);
 	}
 });
 

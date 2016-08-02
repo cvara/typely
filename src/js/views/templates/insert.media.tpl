@@ -1,17 +1,17 @@
-<div class="show-tooltip-button">Insert Media</div>
+<div class="show-tooltip-button" contenteditable="false">Insert Media</div>
 
 <div class="typely-tooltip tooltip hidden">
 	<ul class="tooltip-list media-list">
-		<li class="add-image-button">
+		<li data-media-type="image">
 			<i class="icon-image2"></i>
 		</li>
-		<li class="add-video-button">
+		<li data-media-type="video">
 			<i class="icon-video-camera2"></i>
 		</li>
-		<li class="add-slideshow-button">
+		<li data-media-type="slideshow">
 			<i class="icon-images2"></i>
 		</li>
-		<li class="add-audio-button">
+		<li data-media-type="audio">
 			<i class="icon-volume-medium"></i>
 		</li>
 	</ul>
