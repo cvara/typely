@@ -4,10 +4,11 @@ import _ from 'underscore';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
 import KeycodesMixin from 'mixins/keycodes.mixin';
+import ClickoutMixin from 'mixins/clickout.mixin';
 
 
 const Tooltip = ItemView.extend({
-	
+
 	template: tooltipTpl,
 
 	ui: {
@@ -41,17 +42,16 @@ const Tooltip = ItemView.extend({
 	onAttach: function() {
 		this.setPosition();
 		this.setWidth();
-		this.detectClickouts();
 		this.repositionOnWindowResize();
 	},
 
 	onBeforeDestroy: function() {
-		$(document).off('.' + this.cid);
 		$(window).off('.' + this.cid);
 	},
 
-	onTooltipClickOut: function() {
+	onClickOut: function() {
 		console.log('click out');
+		this.triggerMethod('tooltip:click:out');
 	},
 
 	onUpdatePosition: function() {
@@ -75,16 +75,6 @@ const Tooltip = ItemView.extend({
 
 	onDeactivateToggle: function(format) {
 		this.ui.toggle.filter(`[data-format=${format}]`).removeClass('active');
-	},
-
-	detectClickouts: function() {
-		$(document).on('mousedown.' + this.cid, (e) => {
-		    const container = this.$el;
-			 // if the target of the click isn't the container nor a descendant of the container
-		    if (!container.is(e.target) && container.has(e.target).length === 0) {
-		        this.triggerMethod('tooltip:click:out');
-		    }
-		});
 	},
 
 	setPosition: function() {
@@ -148,6 +138,6 @@ const Tooltip = ItemView.extend({
 	}
 });
 
-Cocktail.mixin(Tooltip, KeycodesMixin);
+Cocktail.mixin(Tooltip, KeycodesMixin, ClickoutMixin);
 
 export default Tooltip;

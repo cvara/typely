@@ -1,4 +1,4 @@
-<ul class="toggle-list">
+<ul class="tooltip-list toggle-list">
 
 	<li class="toggle <%= selectionFormat.indexOf('b') !== -1 ? 'active' : '' %>"
 		data-format="strong">

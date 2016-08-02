@@ -1,32 +1,32 @@
 import $ from 'jquery';
-import {InsertView} from 'views/media';
+import {InsertMediaView} from 'views/media';
 
 
 export default {
 
 	events: {
-		'mouseenter .post-section': 'showAddMediaButton'
+		'mouseenter .post-section': 'handleMouseenterOnSection'
 	},
 
-	ALLOW_INSERT_MEDIA_LAST: true,
+	allowInsertAtTheEnd: true,
 
 	isLast: function(sectionEl) {
 		const el = sectionEl instanceof $ ? sectionEl : $(sectionEl);
 		return el.next(':not(.non-section)').length === 0;
 	},
 
-	showAddMediaButton: function(e) {
-
+	handleMouseenterOnSection: function(e) {
 		const hookEl = $(e.currentTarget);
-
-		if(this.isLast(hookEl) && !this.ALLOW_INSERT_MEDIA_LAST) {
+		if(this.isLast(hookEl) && !this.allowInsertAtTheEnd) {
 			return;
 		}
+		this.showInsertView(hookEl);
+	},
 
-		const insertMediaView = new InsertView({
+	showInsertView: function(hookEl) {
+		const insertMediaView = new InsertMediaView({
 			hookEl: hookEl
 		});
-
 		this.getRegion('insertMedia').show(insertMediaView);
 	}
 };

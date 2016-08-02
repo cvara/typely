@@ -41,7 +41,8 @@ const Editor = LayoutView.extend({
 
 	childEvents: {
 	    'tooltip:click:out': 'clearTooltip',
-		'tooltip:toggle:clicked': 'handleTooltipToggleClick'
+		'tooltip:toggle:clicked': 'handleTooltipToggleClick',
+		'media:tooltip:shown': 'clearTooltip'
 	},
 
 
@@ -418,6 +419,8 @@ const Editor = LayoutView.extend({
 
 
 	handleMouseupOnContent: function(e) {
+		console.log(e);
+
 		// in case the user is trying to drop a sortable element with mouseup
 		if($('.ui-sortable-placeholder').length > 0) {
 			return true;

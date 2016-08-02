@@ -1,11 +1,22 @@
-<div class="show-overlay-button">Insert Media</div>
+<div class="show-tooltip-button">Insert Media</div>
 
-<div class="add-media-overlay-wrapper hidden">
-	<ul class="add-media-overlay posting-tooltip">
-		<li class="add-image-button"></li>
-		<li class="add-video-button"></li>
-		<li class="add-slideshow-button"></li>
-		<li class="add-audio-button"></li>
+<div class="typely-tooltip tooltip hidden">
+	<ul class="tooltip-list media-list">
+		<li class="add-image-button">
+			<i class="icon-image2"></i>
+		</li>
+		<li class="add-video-button">
+			<i class="icon-video-camera2"></i>
+		</li>
+		<li class="add-slideshow-button">
+			<i class="icon-images2"></i>
+		</li>
+		<li class="add-audio-button">
+			<i class="icon-volume-medium"></i>
+		</li>
 	</ul>
-	<div class="posting-tooltip-arrow"><span class="icon"></span></div>
+
+	<div class="tooltip-arrow">
+		<span class="icon"></span>
+	</div>
 </div>
