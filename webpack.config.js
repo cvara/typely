@@ -8,7 +8,11 @@ module.exports = {
 
 	output: {
 		path: __dirname + '/dist/js',
-		filename: 'typely.js'
+		filename: 'typely.js',
+		// export itself to a global var
+		libraryTarget: 'var',
+	    // name of the global var: "Typely"
+	    library: 'Typely'
 	},
 
 	module: {
@@ -50,7 +54,8 @@ module.exports = {
 	],
 
 	externals: {
-		fb: 'var FB'
+		'jquery': '$',
+		'underscore': '_'
 	},
 
 	resolve: {

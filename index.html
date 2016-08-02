@@ -20,12 +20,15 @@
 
 		<div id="demo-container"></div>
 
-		<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js">
+		</script>
+
 		<script type="text/javascript" src="dist/js/typely.js"></script>
 
 		<script type="text/javascript">
-			var Typely = window.Typely;
-			var typely = new Typely({
+			var typely = new Typely.default({
 				container: '#demo-container'
 			});
 		</script>
