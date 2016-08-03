@@ -40,6 +40,7 @@ const Tooltip = ItemView.extend({
 	},
 
 	onAttach: function() {
+		this.getOffsetParent();
 		this.setPosition();
 		this.setWidth();
 		this.repositionOnWindowResize();
@@ -77,20 +78,26 @@ const Tooltip = ItemView.extend({
 		this.ui.toggle.filter(`[data-format=${format}]`).removeClass('active');
 	},
 
+	getOffsetParent: function() {
+		this.offsetParent = this.$el.offsetParent();
+	},
+
 	setPosition: function() {
 		try {
 			// get selection coordinates
 			const selCoordinates = helper.calculateSelectionCoordinates();
-			const tooltipX = (selCoordinates.start.x + selCoordinates.end.x) / 2;
-			const tooltipY = selCoordinates.start.y - 20;
+			const selX = (selCoordinates.start.x + selCoordinates.end.x) / 2;
+			const selY = selCoordinates.start.y - 20;
 
 			// get tooltip box dimensions
 			const w = this.$el.outerWidth();
 			const h = this.$el.outerHeight();
 
+			const offsetPosition = this.offsetParent.position();
+
 			this.$el.css({
-				left : tooltipX - w/2 + 'px',
-				top  : tooltipY - 40 + 'px'
+				left : selX - offsetPosition.left - w/2 + 'px',
+				top  : selY - offsetPosition.top - 40 + 'px'
 			});
 		}
 		catch (e) {
