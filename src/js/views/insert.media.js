@@ -3,6 +3,7 @@ import {ItemView} from 'backbone.marionette';
 import insertMediaTpl from './templates/insert.media';
 import Cocktail from 'backbone.cocktail';
 import ClickoutMixin from 'mixins/clickout.mixin';
+import {requestSingleFileInput} from 'common/file.input';
 
 const InsertMediaView = ItemView.extend({
 	template: insertMediaTpl,
@@ -14,7 +15,8 @@ const InsertMediaView = ItemView.extend({
 		tooltip: '.tooltip',
 		tooltipList: '.tooltip .tooltip-list',
 		tooltipListItem: '.tooltip .tooltip-list li',
-		mediaType: '[data-media-type]'
+		mediaType: '[data-media-type]',
+		fileInput: 'input[type="file"]'
 	},
 
 	events: {
@@ -113,9 +115,31 @@ const InsertMediaView = ItemView.extend({
 		this.killEvent(e);
 		const which = $(e.currentTarget).attr('data-media-type');
 		console.log(which);
+		switch (which) {
+			case 'image':
+				this.initiateImageInput();
+				break;
+			case 'video':
+				this.initiateVideoInput();
+				break;
+			case 'slideshow':
+				this.initiateSlideshowInput();
+				break;
+			case 'audio':
+				this.initiateAudioInput();
+		}
+	},
+
+	initiateImageInput: function() {
+		requestSingleFileInput().then(function(file) {
+			console.log(file);
+			// TODO: displaySingleImage after this.hookEl
+		});
 	}
+
+
 });
 
 Cocktail.mixin(InsertMediaView, ClickoutMixin);
 
-export {InsertMediaView};
+export default InsertMediaView;

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {InsertMediaView} from 'views/media';
+import InsertMediaView from 'views/insert.media';
 
 
 export default {

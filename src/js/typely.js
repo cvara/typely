@@ -1,5 +1,5 @@
-import RootView from './views/root';
-import EditorView from './views/editor';
+import RootView from 'views/root';
+import EditorView from 'views/editor';
 
 
 class Typely {
@@ -14,8 +14,5 @@ class Typely {
 		rootView.getRegion('editor').show(editorView);
 	}
 }
-
-
-window.Typely = Typely;
 
 export default Typely;

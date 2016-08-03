@@ -1,8 +1,6 @@
-import jQuery from 'jquery';
 import $ from 'jquery';
 import {ItemView, LayoutView} from 'backbone.marionette';
-import TooltipView from './tooltip';
-import Radio from 'backbone.radio';
+import TooltipView from 'views/tooltip';
 import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
@@ -419,8 +417,6 @@ const Editor = LayoutView.extend({
 
 
 	handleMouseupOnContent: function(e) {
-		console.log(e);
-
 		// in case the user is trying to drop a sortable element with mouseup
 		if($('.ui-sortable-placeholder').length > 0) {
 			return true;
