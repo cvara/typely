@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import {ItemView, LayoutView} from 'backbone.marionette';
 import TooltipView from 'views/tooltip';
+import InsertMediaView from 'views/insert.media';
 import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
@@ -8,7 +9,6 @@ import KeycodesMixin from 'mixins/keycodes.mixin';
 import UidMixin from 'mixins/uid.mixin';
 import PlaceholdersMixin from 'mixins/placeholders.mixin';
 import SectionsMixin from 'mixins/sections.mixin';
-import MediaMixin from 'mixins/media.mixin';
 import rangy from 'rangy-core';
 import rangySelection from 'rangy-selection';
 
@@ -31,10 +31,11 @@ const Editor = LayoutView.extend({
 	},
 
 	events: {
-		'keydown @ui.content' : 'handleKeydownOnContent',
-		'keyup @ui.content'   : 'handleKeyupOnContent',
-		'mouseup @ui.content' : 'handleMouseupOnContent',
-		'paste .post-section' : 'handlePaste'
+		'keydown @ui.content': 'handleKeydownOnContent',
+		'keyup @ui.content': 'handleKeyupOnContent',
+		'mouseup @ui.content': 'handleMouseupOnContent',
+		'mouseenter .post-section': 'handleMouseenterOnSection',
+		'paste .post-section': 'handlePaste'
 	},
 
 	childEvents: {
@@ -43,6 +44,7 @@ const Editor = LayoutView.extend({
 		'media:tooltip:shown': 'clearTooltip'
 	},
 
+	allowTrailingMedia: true,
 
 	// state
 	isSelectionSaved: false,
@@ -359,7 +361,6 @@ const Editor = LayoutView.extend({
 		});
 
 		this.getRegion('tooltip').show(tooltipView);
-		return true;
 	},
 
 
@@ -639,6 +640,26 @@ const Editor = LayoutView.extend({
 		tooltipView.triggerMethod('update:position');
 	},
 
+	isLast: function(sectionEl) {
+		const el = sectionEl instanceof $ ? sectionEl : $(sectionEl);
+		return el.next(':not(.non-section)').length === 0;
+	},
+
+	handleMouseenterOnSection: function(e) {
+		const hookEl = $(e.currentTarget);
+		if(this.isLast(hookEl) && !this.allowTrailingMedia) {
+			return;
+		}
+		this.showInsertView(hookEl);
+	},
+
+	showInsertView: function(hookEl) {
+		const insertMediaView = new InsertMediaView({
+			hookEl: hookEl
+		});
+		this.getRegion('insertMedia').show(insertMediaView);
+	},
+
 	handlePaste: function(e) {
 
 		var container = e.target;
@@ -672,15 +693,13 @@ const Editor = LayoutView.extend({
 		// restore caret position after paste
 		this.restoreSelection();
 
-		// prevent paste default behaviour & bubbling
+		// prevent paste default behavior & bubbling
 		e.preventDefault();
 		e.stopPropagation();
-		// return false;
-
 	}
 
 });
 
-Cocktail.mixin(Editor, KeycodesMixin, UidMixin, PlaceholdersMixin, SectionsMixin, MediaMixin);
+Cocktail.mixin(Editor, KeycodesMixin, UidMixin, PlaceholdersMixin, SectionsMixin);
 
 export default Editor;
