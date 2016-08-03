@@ -6,7 +6,6 @@ import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
 import KeycodesMixin from 'mixins/keycodes.mixin';
-import UidMixin from 'mixins/uid.mixin';
 import PlaceholdersMixin from 'mixins/placeholders.mixin';
 import SectionsMixin from 'mixins/sections.mixin';
 import rangy from 'rangy-core';
@@ -700,6 +699,6 @@ const Editor = LayoutView.extend({
 
 });
 
-Cocktail.mixin(Editor, KeycodesMixin, UidMixin, PlaceholdersMixin, SectionsMixin);
+Cocktail.mixin(Editor, KeycodesMixin, PlaceholdersMixin, SectionsMixin);
 
 export default Editor;

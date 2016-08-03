@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import helper from 'common/helper';
+import {sectionUIDs, generateSectionUID} from 'common/uid';
 
 export default {
 
@@ -32,7 +33,7 @@ export default {
 	createEmptySection: function(hook, giveFocus) {
 		console.log('createFirstSection');
 		// create new empty section
-		var section = $('<p class="post-section" name="' + this.generateSectionUID() + '"></p>');
+		var section = $('<p class="post-section" name="' + generateSectionUID() + '"></p>');
 		// attach it to dom
 		if (!hook || hook === 'start') {
 			this.ui.sectionParent.prepend(section);
@@ -57,9 +58,9 @@ export default {
 		var sections = this.ui.sectionParent.children(this.sectionSelector);
 
 		// handle the case where the browser gives name to new section (there will be duplicates)
-		for (var i = 0; i < this.sectionUIDs.length; i++) {
+		for (var i = 0; i < sectionUIDs.length; i++) {
 			// find elements with current name
-			var sectionsByName = sections.filter('[name=' + this.sectionUIDs[i] + ']');
+			var sectionsByName = sections.filter('[name=' + sectionUIDs[i] + ']');
 			// if more than one exist, we have duplicates
 			if(sectionsByName.length > 1) {
 				// leaving the first element alone, we change all others' names
@@ -67,7 +68,7 @@ export default {
 				//		 inherited the 'data-side-ref' attribute from it's previous sibling
 				/* jshint -W083 */
 				sectionsByName.each((i, section) => {
-					$(section).attr('name', this.generateSectionUID()).removeAttr('data-side-ref');
+					$(section).attr('name', generateSectionUID()).removeAttr('data-side-ref');
 				});
 				break;
 			}
@@ -80,7 +81,7 @@ export default {
 		var unnamedSections = sections.filter(':not([name])').addClass('post-section');
 
 		unnamedSections.each((i, section) => {
-			$(section).attr('name', this.generateSectionUID());
+			$(section).attr('name', generateSectionUID());
 		});
 	},
 
@@ -122,11 +123,11 @@ export default {
 				}
 
 				// update sectionUIDs in memory to reflect DOM state
-				this.sectionUIDs = [];
+				sectionUIDs.length = 0;
 				sections.each((i, section) => {
-					this.sectionUIDs.push($(section).attr('name'));
+					sectionUIDs.push($(section).attr('name'));
 				});
-				console.info(this.sectionUIDs);
+				console.info(sectionUIDs);
 			}
 
 			// update number of sections
