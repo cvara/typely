@@ -447,7 +447,7 @@ const Editor = LayoutView.extend({
 		}
 		if (parentEl.nodeName === 'LI' || parentEl.parentNode.nodeName === 'LI') {
 			this.showTooltip({
-				disableFormats: ['h1', 'h2', 'em']
+				disableFormats: ['h1', 'h2', 'BLOCKQUOTE']
 			});
 			return false;
 		}
@@ -459,7 +459,7 @@ const Editor = LayoutView.extend({
 		}
 		if (parentEl.nodeName === 'BLOCKQUOTE' ) {
 			this.showTooltip({
-				disableFormats: ['h1', 'h2', 'blockquote']
+				disableFormats: ['h1', 'h2']
 			});
 			return false;
 		}
