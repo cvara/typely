@@ -56,7 +56,7 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	onHookDetached: function() {
-		this.hide();
+		this.triggerMethod('hide');
 	},
 
 	onReveal: function() {
@@ -77,9 +77,12 @@ const InsertMediaView = ItemView.extend({
 		this.triggerMethod('reveal');
 	},
 
-	positionSelf: function(hookEl, parentEl) {
+	onUpdatePosition: function() {
+		this.positionSelf(this.hookEl, this.contentEl);
+	},
 
-		if (!$.contains(document, hookEl[0])) {
+	positionSelf: function(hookEl, parentEl) {
+		if (!hookEl || !$.contains(document, hookEl[0])) {
 		    this.triggerMethod('hook:detached');
 			return;
 		}
