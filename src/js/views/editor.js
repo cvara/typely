@@ -40,10 +40,9 @@ const Editor = LayoutView.extend({
 	childEvents: {
 	    'tooltip:click:out': 'clearTooltip',
 		'tooltip:toggle:clicked': 'handleTooltipToggleClick',
-		'media:tooltip:shown': 'clearTooltip'
+		'media:tooltip:shown': 'clearTooltip',
+		'inserted:single:image': 'handleSingleImageInsertion'
 	},
-
-	allowTrailingMedia: true,
 
 	// state
 	isSelectionSaved: false,
@@ -53,6 +52,11 @@ const Editor = LayoutView.extend({
 	quoteTooltipClass: 'quoteTooltip',
 	listTooltipClass: 'listTooltip',
 
+
+	initialize: function(options) {
+		this.maxFileSize = this.getOption('maxFileSize');
+		this.allowTrailingMedia = this.getOption('allowTrailingMedia');
+	},
 
 	// Selection Related
 	// ==========================
@@ -654,9 +658,18 @@ const Editor = LayoutView.extend({
 
 	showInsertView: function(hookEl) {
 		const insertMediaView = new InsertMediaView({
-			hookEl: hookEl
+			contentEl: this.ui.content,
+			hookEl: hookEl,
+			maxFileSize: this.maxFileSize
 		});
 		this.getRegion('insertMedia').show(insertMediaView);
+	},
+
+	handleSingleImageInsertion: function(childView, {figureEl, hookEl}) {
+		this.updateSections();
+		if (this.isLast(figureEl)) {
+			this.createEmptySection(figureEl, false);
+		}
 	},
 
 	handlePaste: function(e) {

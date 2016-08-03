@@ -1,9 +1,16 @@
 import $ from 'jquery';
 import {ItemView} from 'backbone.marionette';
 import insertMediaTpl from './templates/insert.media';
+import figureSectionTpl from './templates/figure.section';
 import Cocktail from 'backbone.cocktail';
 import ClickoutMixin from 'mixins/clickout.mixin';
 import {requestSingleFileInput} from 'common/file.input';
+import {notify} from 'common/notify';
+import {generateSectionUID, generateImageUID} from 'common/uid';
+
+// TODO: when content height changes, instead of triggering
+//       `postHeightChanged`, just call positionSelf()
+
 
 const InsertMediaView = ItemView.extend({
 	template: insertMediaTpl,
@@ -27,6 +34,8 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	initialize: function() {
+		this.maxFileSize = this.getOption('maxFileSize');
+		this.contentEl = this.getOption('contentEl');
 		this.hookEl = this.getOption('hookEl');
 		this.prevElName = this.hookEl.attr('name');
 		this.nextElName = this.hookEl.next(':not(.non-section)').length > 0 ?
@@ -47,10 +56,9 @@ const InsertMediaView = ItemView.extend({
 		this.destroy();
 	},
 
-	// TODO: instead of triggering `postHeightChanged`,
-	//       just call positionSelf()
 	positionSelf: function() {
 		const hookEl = this.hookEl;
+		const contentEl = this.contentEl;
 
 		if (!$.contains(document, hookEl[0])) {
 		    this.triggerMethod('hook:detached');
@@ -58,8 +66,12 @@ const InsertMediaView = ItemView.extend({
 		}
 
 		const hookPosition = hookEl.position();
+		const contentElPosition = contentEl.position();
 
-		let top = hookPosition.top +
+		const left = 0;
+
+		let top = contentElPosition.top +
+			hookPosition.top +
 			hookEl.outerHeight(true) -
 			parseInt(hookEl.css('margin-bottom'));
 
@@ -75,6 +87,7 @@ const InsertMediaView = ItemView.extend({
 		}
 
 		this.$el.css({
+			left: left + 'px',
 			top: top + 'px'
 		});
 	},
@@ -131,11 +144,73 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	initiateImageInput: function() {
-		requestSingleFileInput().then(function(file) {
-			console.log(file);
-			// TODO: displaySingleImage after this.hookEl
+		requestSingleFileInput().then((file) => {
+			if (!this.isValidImage(file)) {
+				this.destroy();
+				return;
+			}
+			this.displaySingleImage({
+				file: file,
+				hookEl: this.hookEl
+			});
 		});
-	}
+	},
+
+	isValidImage: function(file) {
+		// make sure the file is an image
+		if (!(/jp(e)?g|png|gif/i).test(file.type)) {
+			notify({
+				type: 'warn',
+				title: 'Invalid Image',
+				body: `Image type: ${file.type} is invalid. Only jpg, png and gif are accepted`
+			});
+			return false;
+		}
+		// make sure selected file size does not exceed threshold
+		if (file.size > this.maxFileSize) {
+			notify({
+				type: 'warn',
+				title: 'Image Size Error',
+				body: `Image size should not exceed ${this.maxFileSize}`
+			});
+			return false;
+		}
+		return true;
+	},
+
+	displaySingleImage: function({file, hookEl}) {
+
+		console.log(file, hookEl);
+
+	    const fr = new FileReader();
+
+	    // install event handler for the 'load' event, which fires at completion of the read
+	    fr.onload = () => {
+	        const img = new Image();
+	        img.onload = () => {
+				// generate figure section html
+				const figureHtml = figureSectionTpl({
+					name: generateSectionUID(),
+					src: img.src,
+					id: generateImageUID(),
+					type: file.type,
+					captionPlaceholder: 'Click to enter a caption'
+				});
+				const figureEl = $(figureHtml);
+	            // insert figure after hookEl
+				hookEl.after(figureEl);
+
+				this.triggerMethod('inserted:single:image', {
+					figureEl: figureEl,
+					hookEl: hookEl
+				});
+	        };
+	        // will force the browser to load image & when done will fire 'load' on image
+	        img.src = fr.result;
+	    };
+	    // read the file (will fire 'load' on FileReader when done)
+	    fr.readAsDataURL(file);
+	},
 
 
 });

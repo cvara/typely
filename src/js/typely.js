@@ -3,15 +3,25 @@ import EditorView from 'views/editor';
 
 
 class Typely {
-	constructor({container} = {}) {
-		this.container = container;
+	constructor({
+		container,
+		maxFileSize = 5 * 1024 * 1024, // 5mb
+		allowTrailingMedia = true
+	} = {}) {
 
-		var rootView = new RootView();
-		rootView.addRegion('editor', this.container);
+		if (!container) {
+			throw 'TypelyError: container is not set';
+		}
 
-		var editorView = new EditorView({});
+		const rootView = this.rootView = new RootView();
+		rootView.addRegion('editor', container);
 
-		rootView.getRegion('editor').show(editorView);
+		this.editorView = new EditorView({
+			maxFileSize: maxFileSize,
+			allowTrailingMedia: allowTrailingMedia
+		});
+
+		rootView.getRegion('editor').show(this.editorView);
 	}
 }
 
