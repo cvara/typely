@@ -1,7 +1,11 @@
 import $ from 'jquery';
+import {Model} from 'backbone';
 import {ItemView} from 'backbone.marionette';
 import insertMediaTpl from './templates/insert.media';
-import figureSectionTpl from './templates/figure.section';
+
+// import figureSectionTpl from './templates/figure.section';
+import ImageView from 'views/image';
+
 import Cocktail from 'backbone.cocktail';
 import ClickoutMixin from 'mixins/clickout.mixin';
 import {requestSingleFileInput} from 'common/file.input';
@@ -36,29 +40,44 @@ const InsertMediaView = ItemView.extend({
 	initialize: function() {
 		this.maxFileSize = this.getOption('maxFileSize');
 		this.contentEl = this.getOption('contentEl');
-		this.hookEl = this.getOption('hookEl');
-		this.prevElName = this.hookEl.attr('name');
-		this.nextElName = this.hookEl.next(':not(.non-section)').length > 0 ?
-			this.hookEl.next().attr('name') : -1;
+	},
+
+	onRender: function() {
+		this.triggerMethod('hide');
 	},
 
 	onAttach: function() {
-		this.positionSelf();
 		this.saveSiblingRefsToDOM();
 		this.setTooltipWidth();
 	},
 
 	onClickOut: function() {
-		this.destroy();
+		this.triggerMethod('hide:tooltip');
 	},
 
 	onHookDetached: function() {
-		this.destroy();
+		this.hide();
 	},
 
-	positionSelf: function() {
-		const hookEl = this.hookEl;
-		const contentEl = this.contentEl;
+	onReveal: function() {
+		this.$el.removeClass('hidden');
+	},
+
+	onHide: function() {
+		this.$el.addClass('hidden');
+	},
+
+	onShowAfterHook: function(hookEl) {
+		this.hookEl = hookEl;
+		this.prevElName = this.hookEl.attr('name');
+		this.nextElName = this.hookEl.next(':not(.non-section)').length > 0 ?
+			this.hookEl.next().attr('name') : -1;
+
+		this.positionSelf(hookEl, this.contentEl);
+		this.triggerMethod('reveal');
+	},
+
+	positionSelf: function(hookEl, parentEl) {
 
 		if (!$.contains(document, hookEl[0])) {
 		    this.triggerMethod('hook:detached');
@@ -66,11 +85,11 @@ const InsertMediaView = ItemView.extend({
 		}
 
 		const hookPosition = hookEl.position();
-		const contentElPosition = contentEl.position();
+		const parentElPosition = parentEl.position();
 
 		const left = 0;
 
-		let top = contentElPosition.top +
+		let top = parentElPosition.top +
 			hookPosition.top +
 			hookEl.outerHeight(true) -
 			parseInt(hookEl.css('margin-bottom'));
@@ -115,6 +134,20 @@ const InsertMediaView = ItemView.extend({
 		this.ui.tooltipList.width(itemWidth * itemCount);
 	},
 
+	onShowTooltip: function() {
+		if (this.ui.tooltip.hasClass('hidden')) {
+			this.ui.tooltip.removeClass('hidden');
+			this.triggerMethod('media:tooltip:shown');
+		}
+	},
+
+	onHideTooltip: function() {
+		if (!this.ui.tooltip.hasClass('hidden')) {
+			this.ui.tooltip.addClass('hidden');
+			this.triggerMethod('media:tooltip:hidden');
+		}
+	},
+
 	toggleTooltip: function() {
 		this.ui.tooltip.toggleClass('hidden');
 		if (this.ui.tooltip.hasClass('hidden')) {
@@ -127,7 +160,6 @@ const InsertMediaView = ItemView.extend({
 	handleMediaTypeClick: function(e) {
 		this.killEvent(e);
 		const which = $(e.currentTarget).attr('data-media-type');
-		console.log(which);
 		switch (which) {
 			case 'image':
 				this.initiateImageInput();
@@ -146,7 +178,7 @@ const InsertMediaView = ItemView.extend({
 	initiateImageInput: function() {
 		requestSingleFileInput().then((file) => {
 			if (!this.isValidImage(file)) {
-				this.destroy();
+				// this.destroy();
 				return;
 			}
 			this.displaySingleImage({
@@ -179,31 +211,33 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	displaySingleImage: function({file, hookEl}) {
-
-		console.log(file, hookEl);
-
 	    const fr = new FileReader();
 
 	    // install event handler for the 'load' event, which fires at completion of the read
 	    fr.onload = () => {
 	        const img = new Image();
 	        img.onload = () => {
-				// generate figure section html
-				const figureHtml = figureSectionTpl({
-					name: generateSectionUID(),
-					src: img.src,
-					id: generateImageUID(),
-					type: file.type,
-					captionPlaceholder: 'Click to enter a caption'
+				// prepare view
+				const imageView = new ImageView({
+					model: new Model({
+						src: img.src,
+						id: generateImageUID(),
+						type: file.type,
+						captionPlaceholder: 'Click to enter a caption'
+					}),
+					name: generateSectionUID()
 				});
-				const figureEl = $(figureHtml);
-	            // insert figure after hookEl
-				hookEl.after(figureEl);
-
+				// render it
+				imageView.render();
+	            // insert view $el after hookEl
+				hookEl.after(imageView.$el);
+				// trigger event (to notify the editor parent view)
 				this.triggerMethod('inserted:single:image', {
-					figureEl: figureEl,
+					imageView: imageView,
 					hookEl: hookEl
 				});
+				// hide tooltip
+				this.triggerMethod('hide:tooltip');
 	        };
 	        // will force the browser to load image & when done will fire 'load' on image
 	        img.src = fr.result;

@@ -52,11 +52,21 @@ const Editor = LayoutView.extend({
 	quoteTooltipClass: 'quoteTooltip',
 	listTooltipClass: 'listTooltip',
 
+	// hash map for storing media view refs indexed by their section name
+	mediaViews: {},
 
 	initialize: function(options) {
 		this.maxFileSize = this.getOption('maxFileSize');
 		this.allowTrailingMedia = this.getOption('allowTrailingMedia');
 	},
+
+	onBeforeShow: function() {
+		// InsertMediaView is attached directly
+		// NOTE: the InsertMediaView remains forever attached,
+		// it just shows and repositions itself when asked to
+		this.attachInsertMediaView();
+	},
+
 
 	// Selection Related
 	// ==========================
@@ -112,7 +122,7 @@ const Editor = LayoutView.extend({
 
 	handleKeydownOnContent: function(e) {
 		// this.hideMediaOverlays();
-		this.guardImportantKeys(e); // for sections
+		this.overrideImportantKeys(e);
 		this.detectShortcuts(e);
 		this.properlyClearTooltip(e);
 		this.detectListInput(e);
@@ -128,7 +138,7 @@ const Editor = LayoutView.extend({
 		}
 	},
 
-	guardImportantKeys: function(e) {
+	overrideImportantKeys: function(e) {
 
 		var self = this;
 		var parentEl = helper.getSelectionParentElement();
@@ -172,7 +182,8 @@ const Editor = LayoutView.extend({
 					self.markImageForDelete(this);
 				});
 				// manually remove the previous element
-				$prev.remove();
+				const mediaName = $prev.attr('name');
+				self.destroyMediaView(mediaName);
 				// force section refreshing
 				// self.$postContent.trigger('sectionsChanged.posting.EDITOR');
 				this.updateSections();
@@ -197,7 +208,8 @@ const Editor = LayoutView.extend({
 					self.markImageForDelete(this);
 				});
 				// manually remove the following element
-				$next.remove();
+				const mediaName = $next.attr('name');
+				self.destroyMediaView(mediaName);
 				// force section refreshing
 				// self.$postContent.trigger('sectionsChanged.posting.EDITOR');
 				this.updateSections();
@@ -656,20 +668,36 @@ const Editor = LayoutView.extend({
 		this.showInsertView(hookEl);
 	},
 
-	showInsertView: function(hookEl) {
-		const insertMediaView = new InsertMediaView({
+	attachInsertMediaView: function() {
+		this.insertMediaView = new InsertMediaView({
 			contentEl: this.ui.content,
-			hookEl: hookEl,
 			maxFileSize: this.maxFileSize
 		});
-		this.getRegion('insertMedia').show(insertMediaView);
+		this.getRegion('insertMedia').show(this.insertMediaView);
 	},
 
-	handleSingleImageInsertion: function(childView, {figureEl, hookEl}) {
+	showInsertView: function(hookEl) {
+		this.insertMediaView.triggerMethod('show:after:hook', hookEl);
+	},
+
+	handleSingleImageInsertion: function(childView, {imageView, hookEl}) {
+		this.storeMediaView(imageView);
 		this.updateSections();
-		if (this.isLast(figureEl)) {
-			this.createEmptySection(figureEl, false);
+		if (this.isLast(imageView.$el)) {
+			this.createEmptySection(imageView.$el, false);
 		}
+	},
+
+	storeMediaView: function(view) {
+		this.mediaViews[view.name] = view;
+		console.log(this.mediaViews);
+	},
+
+	destroyMediaView: function(name) {
+		this.mediaViews[name].destroy();
+		delete this.mediaViews[name];
+		this.insertMediaView.triggerMethod('hide');
+		console.log(this.mediaViews);
 	},
 
 	handlePaste: function(e) {
