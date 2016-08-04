@@ -36,7 +36,6 @@ const VideoPickerView = PickerView.extend({
 	},
 
 	showVideo: function({url, caption}) {
-		console.log(url, caption);
 		let match, videoID, provider;
 
 		// youtube
@@ -52,6 +51,7 @@ const VideoPickerView = PickerView.extend({
 
 		const videoView = new VideoView({
 			model: new Model({
+				url: url,
 				videoId: videoID,
 				caption: caption,
 				captionPlaceholder: 'Click to enter a caption'
