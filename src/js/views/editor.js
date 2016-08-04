@@ -287,10 +287,10 @@ const Editor = LayoutView.extend({
 			hookEl: hookEl
 		});
 		mediaPickerView.render();
-		// manually register a listener for 'inserted media'
+		// manually register a listener for 'inserted:media'
 		// NOTE: we need this since mediaPickerViews are not
 		// rendered in this view's regions, and thus their
-		// events do not spontaneously propagate
+		// events do not spontaneously propagate as childEvents
 		mediaPickerView.on('inserted:media', (args) => {
 			// emulate a 'child:inserted:media' invoking the handler
 			this.triggerMethod('child:inserted:media', mediaPickerView, args);
