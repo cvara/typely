@@ -65,10 +65,10 @@ const VideoPickerView = PickerView.extend({
 		// insert view $el after self
 		this.$el.before(videoView.$el);
 
-		// FIXME: this does not work, since VideoPickerView
+		// NOTE: this works, even though VideoPickerView
 		// is NOT a child of the EditorView (not rendered
-		// inside one of its regions). This means that events
-		// have no way of bubbling up. Use backbone.radio instead
+		// inside one of its regions), because the EditorView
+		// manually registers an event listener
 		this.triggerMethod('inserted:media', {
 			mediaView: videoView,
 			hookEl: this.hookEl
