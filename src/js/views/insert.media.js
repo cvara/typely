@@ -4,7 +4,7 @@ import {ItemView} from 'backbone.marionette';
 import insertMediaTpl from './templates/insert.media';
 
 // import figureSectionTpl from './templates/figure.section';
-import ImageView from 'views/image';
+import ImageView from 'views/media.image';
 
 import Cocktail from 'backbone.cocktail';
 import ClickoutMixin from 'mixins/clickout.mixin';
@@ -162,23 +162,19 @@ const InsertMediaView = ItemView.extend({
 
 	handleMediaTypeClick: function(e) {
 		this.killEvent(e);
-		const which = $(e.currentTarget).attr('data-media-type');
-		switch (which) {
-			case 'image':
-				this.initiateImageInput();
-				break;
-			case 'video':
-				this.initiateVideoInput();
-				break;
-			case 'slideshow':
-				this.initiateSlideshowInput();
-				break;
-			case 'audio':
-				this.initiateAudioInput();
+		const type = $(e.currentTarget).attr('data-media-type');
+		// handle single image input ourselves
+		if (type === 'image') {
+			this.handleSingleImageInput();
+		}
+		// notify parent (editor view) to handle all other media input
+		else {
+			this.triggerMethod('hide:tooltip');
+			this.triggerMethod('request:media:input', type, this.hookEl);
 		}
 	},
 
-	initiateImageInput: function() {
+	handleSingleImageInput: function() {
 		requestSingleFileInput().then((file) => {
 			if (!this.isValidImage(file)) {
 				// this.destroy();
@@ -235,8 +231,8 @@ const InsertMediaView = ItemView.extend({
 	            // insert view $el after hookEl
 				hookEl.after(imageView.$el);
 				// trigger event (to notify the editor parent view)
-				this.triggerMethod('inserted:single:image', {
-					imageView: imageView,
+				this.triggerMethod('inserted:media', {
+					mediaView: imageView,
 					hookEl: hookEl
 				});
 				// hide tooltip

@@ -1,3 +1,4 @@
+import RadioShim from 'radio.shim';
 import RootView from 'views/root';
 import EditorView from 'views/editor';
 

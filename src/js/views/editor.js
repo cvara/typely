@@ -39,13 +39,14 @@ const Editor = LayoutView.extend({
 		'paste .post-section': 'handlePaste'
 	},
 
+	// Events fired from childviews rendered inside the view's regions
 	// NOTE: tooltip:* refers to selection tooltip whereas
 	// media:tooltip:* refers to to the insert media tooltip
 	childEvents: {
 	    'tooltip:click:out': 'clearTooltip',
 		'tooltip:toggle:clicked': 'onChildTooltipToggleClicked',
 		'media:tooltip:shown': 'clearTooltip',
-		'inserted:single:image': 'onChildInsertedSingleImage',
+		'inserted:media': 'onChildInsertedMedia',
 		'request:media:input': 'onChildRequestMediaInput'
 	},
 
@@ -70,17 +71,10 @@ const Editor = LayoutView.extend({
 	// we may delete them when done). We need to store both, since the
 	// media instances can't be inserted into a region, so we lose all
 	// the region-related view management that is built in Marionette.
-	mediaPickerViews: {
-		constructors: {
-			video: VideoPickerView,
-			audio: null,
-			slideshow: null
-		},
-		instances: {
-			video: null,
-			audio: null,
-			slideshow: null
-		}
+	mediaPickerViewConstructors: {
+		video: VideoPickerView,
+		audio: null,
+		slideshow: null
 	},
 
 	initialize: function(options) {
@@ -279,39 +273,21 @@ const Editor = LayoutView.extend({
 	// Media Picker Related
 	// ==========================
 	//
-	onChildRequestMediaInput: function(childView, type, hoolEl) {
-		this.showMediaPickerView(type, hoolEl);
-	},
-
-	isMediaPickerActive: function(type) {
-		return Boolean(this.getMediaPickerView(type));
-	},
-
-	getMediaPickerView: function(type) {
-		return this.mediaPickerViews.instances[type];
-	},
-
-	setMediaPickerView: function(type, view) {
-		this.mediaPickerViews.instances[type] = view;
+	onChildRequestMediaInput: function(childView, type, hookEl) {
+		this.showMediaPickerView(type, hookEl);
 	},
 
 	getMediaPickerConstructor: function(type) {
-		return this.mediaPickerViews.constructors[type];
-	},
-
-	clearMediaPickerView: function(type) {
-		const view = this.getMediaPickerView(type);
-		view.destroy();
-		this.mediaPickerViews.instances[type] = null;
+		return this.mediaPickerViewConstructors[type];
 	},
 
 	showMediaPickerView: function(type, hookEl) {
-		console.log('showMediaPickerView');
 		const MediaPicker = this.getMediaPickerConstructor(type);
-		const mediaPickerView = new MediaPicker();
+		const mediaPickerView = new MediaPicker({
+			hookEl: hookEl
+		});
 		mediaPickerView.render();
 		mediaPickerView.$el.insertAfter(hookEl);
-		this.setMediaPickerView(mediaPickerView);
 	},
 
 
@@ -676,11 +652,12 @@ const Editor = LayoutView.extend({
 		this.insertMediaView.triggerMethod('show:after:hook', hookEl);
 	},
 
-	onChildInsertedSingleImage: function(childView, {imageView, hookEl}) {
-		this.storeMediaView(imageView);
+	onChildInsertedMedia: function(childView, {mediaView, hookEl}) {
+		console.log('onChildInsertedMedia', mediaView, hookEl);
+		this.storeMediaView(mediaView);
 		this.updateSections();
-		if (this.isLast(imageView.$el)) {
-			this.createEmptySection(imageView.$el, false);
+		if (this.isLast(mediaView.$el)) {
+			this.createEmptySection(mediaView.$el, false);
 		}
 	},
 
