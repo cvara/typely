@@ -67,6 +67,29 @@ const InsertMediaView = ItemView.extend({
 		this.$el.addClass('hidden');
 	},
 
+	onShowTooltip: function() {
+		if (this.ui.tooltip.hasClass('hidden')) {
+			this.ui.tooltip.removeClass('hidden');
+			this.triggerMethod('media:tooltip:shown');
+		}
+	},
+
+	onHideTooltip: function() {
+		if (!this.ui.tooltip.hasClass('hidden')) {
+			this.ui.tooltip.addClass('hidden');
+			this.triggerMethod('media:tooltip:hidden');
+		}
+	},
+
+	onToggleTooltip: function() {
+		this.ui.tooltip.toggleClass('hidden');
+		if (this.ui.tooltip.hasClass('hidden')) {
+			this.triggerMethod('media:tooltip:hidden');
+		} else {
+			this.triggerMethod('media:tooltip:shown');
+		}
+	},
+
 	onShowAfterHook: function(hookEl) {
 		this.hookEl = hookEl;
 		this.prevElName = this.hookEl.attr('name');
@@ -121,7 +144,7 @@ const InsertMediaView = ItemView.extend({
 
 	handleTooltipButtonClick: function(e) {
 		this.killEvent(e);
-		this.toggleTooltip();
+		this.triggerMethod('toggle:tooltip');
 		return false;
 	},
 
@@ -135,29 +158,6 @@ const InsertMediaView = ItemView.extend({
 		const itemCount = this.ui.tooltipListItem.length;
 		// this.ui.tooltip.width(itemWidth * itemCount);
 		this.ui.tooltipList.width(itemWidth * itemCount);
-	},
-
-	onShowTooltip: function() {
-		if (this.ui.tooltip.hasClass('hidden')) {
-			this.ui.tooltip.removeClass('hidden');
-			this.triggerMethod('media:tooltip:shown');
-		}
-	},
-
-	onHideTooltip: function() {
-		if (!this.ui.tooltip.hasClass('hidden')) {
-			this.ui.tooltip.addClass('hidden');
-			this.triggerMethod('media:tooltip:hidden');
-		}
-	},
-
-	toggleTooltip: function() {
-		this.ui.tooltip.toggleClass('hidden');
-		if (this.ui.tooltip.hasClass('hidden')) {
-			this.triggerMethod('media:tooltip:hidden');
-		} else {
-			this.triggerMethod('media:tooltip:shown');
-		}
 	},
 
 	handleMediaTypeClick: function(e) {
