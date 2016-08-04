@@ -2,10 +2,12 @@ import $ from 'jquery';
 import {ItemView, LayoutView} from 'backbone.marionette';
 import TooltipView from 'views/tooltip';
 import InsertMediaView from 'views/insert.media';
+import VideoPickerView from 'views/picker.video';
 import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
 import KeycodesMixin from 'mixins/keycodes.mixin';
+import KeyOverridesMixin from 'mixins/key.overrides.mixin';
 import PlaceholdersMixin from 'mixins/placeholders.mixin';
 import SectionsMixin from 'mixins/sections.mixin';
 import rangy from 'rangy-core';
@@ -37,11 +39,14 @@ const Editor = LayoutView.extend({
 		'paste .post-section': 'handlePaste'
 	},
 
+	// NOTE: tooltip:* refers to selection tooltip whereas
+	// media:tooltip:* refers to to the insert media tooltip
 	childEvents: {
 	    'tooltip:click:out': 'clearTooltip',
-		'tooltip:toggle:clicked': 'handleTooltipToggleClick',
+		'tooltip:toggle:clicked': 'onChildTooltipToggleClicked',
 		'media:tooltip:shown': 'clearTooltip',
-		'inserted:single:image': 'handleSingleImageInsertion'
+		'inserted:single:image': 'onChildInsertedSingleImage',
+		'request:media:input': 'onChildRequestMediaInput'
 	},
 
 	// state
@@ -53,7 +58,30 @@ const Editor = LayoutView.extend({
 	listTooltipClass: 'listTooltip',
 
 	// hash map for storing media view refs indexed by their section name
+	// NOTE: not to be confused with the mediaPickerViews below: this is
+	// a dictionary that stores the views related to all *inserted* media
+	// sections that are part of the content
 	mediaViews: {},
+
+	// media picker views & constructors
+	// NOTE: these are the views that allow the selection of the media
+	// to be inserted into the content. We store both the constructors
+	// (so we may create new instances) and the created instances (so
+	// we may delete them when done). We need to store both, since the
+	// media instances can't be inserted into a region, so we lose all
+	// the region-related view management that is built in Marionette.
+	mediaPickerViews: {
+		constructors: {
+			video: VideoPickerView,
+			audio: null,
+			slideshow: null
+		},
+		instances: {
+			video: null,
+			audio: null,
+			slideshow: null
+		}
+	},
 
 	initialize: function(options) {
 		this.maxFileSize = this.getOption('maxFileSize');
@@ -139,84 +167,13 @@ const Editor = LayoutView.extend({
 	},
 
 	overrideImportantKeys: function(e) {
-
-		var self = this;
-		var parentEl = helper.getSelectionParentElement();
-
-		// 'enter' override
-		if(e.keyCode === self.enterKey) {
-			// 'enter' was pressed at the end of heading element
-			// NOTE: chrome instead of appending <p> appends <div> after headings, which is unwanted
-			if(/^H[123456]$/.test(parentEl.nodeName) && helper.carretAtEndOfElement(parentEl)) {
-				e.preventDefault(); // prevent default behaviour (would be the insertion of a <p> or <div>)
-				self.createEmptySection(parentEl, true);
-			}
-			// 'enter' was pressed at the end of blockquote element
-			else if(/BLOCKQUOTE/.test(parentEl.nodeName) && helper.carretAtEndOfElement(parentEl)) {
-				console.info('"enter" was pressed at the end of blockquote element');
-				e.preventDefault(); // prevent default behaviour (would be the insertion of a new blockquote in Chrome or a <br> in Firefox)
-				self.createEmptySection(parentEl, true);
-			}
-			// 'enter' was pressed from inside a media element
-			else if(self.isMediaElement(parentEl)) {
-				e.preventDefault();
-			}
-		}
-
-		// 'backspace' override
-		else if(e.keyCode === this.backspaceKey) {
-			var $prev = $(parentEl).prev();
-			// 'backspace' was pressed at the start of figcaption element
-			if(
-				$(parentEl).hasClass('caption') &&
-				(helper.carretAtStartOfElement(parentEl) || parentEl.textContent.length === 0
-			) ) {
-				e.preventDefault();
-			}
-			// 'backspace' was pressed immediately after a media element
-			else if(helper.carretAtStartOfElement(parentEl) && $prev.hasClass('media-element')) {
-				console.log('bs after media');
-				e.preventDefault();
-				// mark images inside $prev for delete (there may be many)
-				$('img', $prev).each(function() {
-					self.markImageForDelete(this);
-				});
-				// manually remove the previous element
-				const mediaName = $prev.attr('name');
-				self.destroyMediaView(mediaName);
-				// force section refreshing
-				// self.$postContent.trigger('sectionsChanged.posting.EDITOR');
-				this.updateSections();
-			}
-		}
-
-		// 'delete' override
-		else if(e.keyCode === self.deleteKey) {
-			var $next = $(parentEl).next();
-			// 'delete' was pressed at the end of figcaption element
-			if(
-				$(parentEl).hasClass('caption') &&
-				(helper.carretAtEndOfElement(parentEl) || parentEl.textContent.length === 0) ) {
-				e.preventDefault();
-			}
-			// 'delete' was pressed at the end of current element & next element is a media element
-			else if(helper.carretAtEndOfElement(parentEl) && $next.hasClass('media-element')) {
-				console.log('del before media');
-				e.preventDefault();
-				// mark images inside $next for delete (there may be many)
-				$('img', $next).each(function() {
-					self.markImageForDelete(this);
-				});
-				// manually remove the following element
-				const mediaName = $next.attr('name');
-				self.destroyMediaView(mediaName);
-				// force section refreshing
-				// self.$postContent.trigger('sectionsChanged.posting.EDITOR');
-				this.updateSections();
-			}
-		}
+		const parentEl = helper.getSelectionParentElement();
+		const isTrailing = helper.carretAtEndOfElement(parentEl);
+		const isLeading = helper.carretAtStartOfElement(parentEl);
+		const keyName = this.keyIndex[e.keyCode];
+		// override methods reside in KeyOverridesMixin
+		this.triggerMethod(`override:${keyName}`, e, parentEl, isTrailing, isLeading);
 	},
-
 
 	detectListInput: function(e) {
 
@@ -316,6 +273,45 @@ const Editor = LayoutView.extend({
 		if (this.ctrlDown && e.keyCode === this.xKey) {
 			this.triggerMethod('cut');
 		}
+	},
+
+
+	// Media Picker Related
+	// ==========================
+	//
+	onChildRequestMediaInput: function(childView, type, hoolEl) {
+		this.showMediaPickerView(type, hoolEl);
+	},
+
+	isMediaPickerActive: function(type) {
+		return Boolean(this.getMediaPickerView(type));
+	},
+
+	getMediaPickerView: function(type) {
+		return this.mediaPickerViews.instances[type];
+	},
+
+	setMediaPickerView: function(type, view) {
+		this.mediaPickerViews.instances[type] = view;
+	},
+
+	getMediaPickerConstructor: function(type) {
+		return this.mediaPickerViews.constructors[type];
+	},
+
+	clearMediaPickerView: function(type) {
+		const view = this.getMediaPickerView(type);
+		view.destroy();
+		this.mediaPickerViews.instances[type] = null;
+	},
+
+	showMediaPickerView: function(type, hookEl) {
+		console.log('showMediaPickerView');
+		const MediaPicker = this.getMediaPickerConstructor(type);
+		const mediaPickerView = new MediaPicker();
+		mediaPickerView.render();
+		mediaPickerView.$el.insertAfter(hookEl);
+		this.setMediaPickerView(mediaPickerView);
 	},
 
 
@@ -467,7 +463,7 @@ const Editor = LayoutView.extend({
 		return false;
 	},
 
-	handleTooltipToggleClick: function(tooltipView, toggle, formatType, isActive, url) {
+	onChildTooltipToggleClicked: function(tooltipView, toggle, formatType, isActive, url) {
 		// no need to format anything just yet, just show url input
 		if (formatType === 'a' && !isActive && !url) {
 		    // restore the selection (it has been lost on click)
@@ -680,7 +676,7 @@ const Editor = LayoutView.extend({
 		this.insertMediaView.triggerMethod('show:after:hook', hookEl);
 	},
 
-	handleSingleImageInsertion: function(childView, {imageView, hookEl}) {
+	onChildInsertedSingleImage: function(childView, {imageView, hookEl}) {
 		this.storeMediaView(imageView);
 		this.updateSections();
 		if (this.isLast(imageView.$el)) {
@@ -740,6 +736,6 @@ const Editor = LayoutView.extend({
 
 });
 
-Cocktail.mixin(Editor, KeycodesMixin, PlaceholdersMixin, SectionsMixin);
+Cocktail.mixin(Editor, KeycodesMixin, KeyOverridesMixin, PlaceholdersMixin, SectionsMixin);
 
 export default Editor;
