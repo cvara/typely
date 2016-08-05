@@ -2,15 +2,14 @@ import $ from 'jquery';
 import {Model} from 'backbone';
 import {ItemView} from 'backbone.marionette';
 import insertMediaTpl from './templates/insert.media';
-
-// import figureSectionTpl from './templates/figure.section';
 import ImageView from 'views/media.image';
-
 import Cocktail from 'backbone.cocktail';
 import ClickoutMixin from 'mixins/clickout.mixin';
-import {requestSingleFileInput} from 'common/file.input';
+import {requestFileInput} from 'common/file.input';
 import {notify} from 'common/notify';
 import {generateSectionUID, generateImageUID} from 'common/uid';
+import {isImage} from 'common/validators';
+import {readAsDataUrl} from 'common/image.reader';
 
 // TODO: when content height changes, instead of triggering
 //       `postHeightChanged`, just call positionSelf()
@@ -175,10 +174,24 @@ const InsertMediaView = ItemView.extend({
 	},
 
 	handleSingleImageInput: function() {
-		requestSingleFileInput().then((file) => {
-			if (!this.isValidImage(file)) {
-				// this.destroy();
+		requestFileInput().then((file) => {
+			// validate image type
+			if (!isImage(file)) {
+				notify({
+					type: 'warn',
+					title: 'Invalid Image',
+					body: `Image type: ${file.type} is invalid. Only jpg, png and gif are accepted`
+				});
 				return;
+			}
+			// make sure selected file size does not exceed threshold
+			if (file.size > this.maxFileSize) {
+				notify({
+					type: 'warn',
+					title: 'Image Size Error',
+					body: `Image size should not exceed ${this.maxFileSize}`
+				});
+				return false;
 			}
 			this.displaySingleImage({
 				file: file,
@@ -187,35 +200,11 @@ const InsertMediaView = ItemView.extend({
 		});
 	},
 
-	isValidImage: function(file) {
-		// make sure the file is an image
-		if (!(/jp(e)?g|png|gif/i).test(file.type)) {
-			notify({
-				type: 'warn',
-				title: 'Invalid Image',
-				body: `Image type: ${file.type} is invalid. Only jpg, png and gif are accepted`
-			});
-			return false;
-		}
-		// make sure selected file size does not exceed threshold
-		if (file.size > this.maxFileSize) {
-			notify({
-				type: 'warn',
-				title: 'Image Size Error',
-				body: `Image size should not exceed ${this.maxFileSize}`
-			});
-			return false;
-		}
-		return true;
-	},
-
 	displaySingleImage: function({file, hookEl}) {
-	    const fr = new FileReader();
 
-	    // install event handler for the 'load' event, which fires at completion of the read
-	    fr.onload = () => {
-	        const img = new Image();
-	        img.onload = () => {
+		readAsDataUrl(file).then((result) => {
+			const img = new Image();
+			img.onload = () => {
 				// prepare view
 				const imageView = new ImageView({
 					model: new Model({
@@ -228,7 +217,7 @@ const InsertMediaView = ItemView.extend({
 				});
 				// render it
 				imageView.render();
-	            // insert view $el after hookEl
+				// insert view $el after hookEl
 				hookEl.after(imageView.$el);
 				// trigger event (to notify the editor parent view)
 				this.triggerMethod('inserted:media', {
@@ -237,12 +226,10 @@ const InsertMediaView = ItemView.extend({
 				});
 				// hide tooltip
 				this.triggerMethod('hide:tooltip');
-	        };
-	        // will force the browser to load image & when done will fire 'load' on image
-	        img.src = fr.result;
-	    };
-	    // read the file (will fire 'load' on FileReader when done)
-	    fr.readAsDataURL(file);
+			};
+			// will force the browser to load image & when done will fire 'load' on image
+			img.src = result;
+		});
 	},
 
 

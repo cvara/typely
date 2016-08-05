@@ -3,6 +3,7 @@ import {ItemView, LayoutView} from 'backbone.marionette';
 import TooltipView from 'views/tooltip';
 import InsertMediaView from 'views/insert.media';
 import VideoPickerView from 'views/picker.video';
+import SlideshowPickerView from 'views/picker.slideshow';
 import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
@@ -74,7 +75,7 @@ const Editor = LayoutView.extend({
 	mediaPickerViewConstructors: {
 		video: VideoPickerView,
 		audio: null,
-		slideshow: null
+		slideshow: SlideshowPickerView
 	},
 
 	initialize: function(options) {
@@ -284,7 +285,8 @@ const Editor = LayoutView.extend({
 	showMediaPickerView: function(type, hookEl) {
 		const MediaPicker = this.getMediaPickerConstructor(type);
 		const mediaPickerView = new MediaPicker({
-			hookEl: hookEl
+			hookEl: hookEl,
+			maxFileSize: this.maxFileSize
 		});
 		mediaPickerView.render();
 		// manually register a listener for 'inserted:media'

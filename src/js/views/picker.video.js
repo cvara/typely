@@ -2,6 +2,7 @@ import PickerView from 'views/picker';
 import {Model} from 'backbone';
 import VideoView from 'views/media.video';
 import videoPickerTpl from './templates/picker.video';
+import _ from 'underscore';
 
 import {generateSectionUID} from 'common/uid';
 
@@ -46,21 +47,8 @@ const VideoPickerView = PickerView.extend({
 			provider: provider
 		});
 
-		videoView.render();
-
-		// insert view $el after self
-		this.$el.before(videoView.$el);
-
-		// NOTE: this works, even though VideoPickerView
-		// is NOT a child of the EditorView (not rendered
-		// inside one of its regions), because the EditorView
-		// manually registers an event listener
-		this.triggerMethod('inserted:media', {
-			mediaView: videoView,
-			hookEl: this.hookEl
-		});
-
-		this.destroy();
+		// invoke parent method to insert view
+		this.insertMediaView(videoView);
 	}
 });
 

@@ -1,10 +1,10 @@
-import {ItemView} from 'backbone.marionette';
+import {CompositeView} from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import _ from 'underscore';
 import {isUrl} from 'common/validators';
 import formErrorTpl from './templates/form.error';
 
-const PickerView = ItemView.extend({
+const PickerView = CompositeView.extend({
 
 	className: 'typely-media-picker non-section mark-for-editable',
 
@@ -28,6 +28,7 @@ const PickerView = ItemView.extend({
 
 	initialize: function() {
 		this.hookEl = this.getOption('hookEl');
+		this.maxFileSize = this.getOption('maxFileSize');
 	},
 
 	stopPropagation: function(e) {
@@ -74,6 +75,24 @@ const PickerView = ItemView.extend({
 	clearErrors: function() {
 		this.ui.formGroup.removeClass('hasError');
 		this.$el.find('.form-error').remove();
+	},
+
+	insertMediaView: function(view) {
+		view.render();
+
+		// insert view $el before self
+		this.$el.before(view.$el);
+
+		// NOTE: this works, even though PickerView
+		// is NOT a child of the EditorView (not rendered
+		// inside one of its regions), because the EditorView
+		// manually registers an event listener
+		this.triggerMethod('inserted:media', {
+			mediaView: view,
+			hookEl: this.hookEl
+		});
+
+		this.destroy();
 	}
 });
 

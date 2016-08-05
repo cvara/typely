@@ -14,4 +14,8 @@ const isEmail = function(str) {
 	return patterns.email.test(str);
 };
 
-export {isUrl, isEmail};
+const isImage = function(file) {
+	return (/jp(e)?g|png|gif/i).test(file.type);
+};
+
+export {isUrl, isEmail, isImage};

@@ -1,18 +1,10 @@
 import $ from 'jquery';
 
-const requestSingleFileInput = function() {
+const requestFileInput = function({multiple = false} = {}) {
 
 	const deferred = $.Deferred();
 
-	const input = $('<input type="file">').css({
-		'position': 'absolute',
-		'top': 0,
-		'left': 0,
-		'width': 0,
-		'height': 0,
-		'visibility': 'hidden',
-		'z-index': -1
-	});
+	const input = $(`<input class="typely-hidden-input" type="file" ${multiple ? 'multiple' : ''}>`);
 
 	if (!input[0].files) {
 		deferred.reject({
@@ -24,7 +16,8 @@ const requestSingleFileInput = function() {
 	input.appendTo('body');
 
 	input.on('change', (e) => {
-		deferred.resolve(input[0].files[0]);
+		const resolveVal = multiple ? input[0].files : input[0].files[0];
+		deferred.resolve(resolveVal);
 		input.remove(); // chrome won't fire `change` event if same image is selected twice
 	});
 
@@ -33,4 +26,4 @@ const requestSingleFileInput = function() {
 	return deferred.promise();
 };
 
-export {requestSingleFileInput};
+export {requestFileInput};

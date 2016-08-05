@@ -9,4 +9,56 @@
 		margin: 8px 5px;
 		display: block;
 	}
+
+	.image-previews {
+		list-style-type: none;
+		min-height: 0;
+		padding: 0;
+		position: relative;
+		margin-bottom: 15px;
+		> li {
+		    background-color: #f2f2f2;
+		    cursor: move;
+		    height: 100px;
+		    margin: 4px 0;
+		    padding: 15px 56px;
+		    position: relative;
+			.img-container {
+				height: 100%;
+				[class*="col-"] {
+					height: 100%;
+				}
+				img {
+					max-height: 100%;
+					max-width: 100%;
+				}
+				input {
+				    font-size: 14px;
+				    height: 35px;
+				    margin-top: 18px;
+				    right: 30px;
+				    top: 22px;
+				    width: 100%;
+				}
+			}
+
+			.move-img,
+			.delete-img {
+			    bottom: 0;
+			    height: 20px;
+				width: 20px;
+			    margin: auto 15px;
+			    position: absolute;
+			    text-align: center;
+			    top: 0;
+			}
+			.move-img {
+				left: 0;
+			}
+			.delete-img {
+				right: 0;
+				cursor: pointer;
+			}
+		}
+	}
 }
