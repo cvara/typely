@@ -53,7 +53,7 @@ const PickerView = ItemView.extend({
 
 	validateInput: function({url, caption}) {
 		let errors = {};
-		if (!isUrl(url)) {
+		if (url!== undefined && !isUrl(url)) {
 			errors.url = 'Url is invalid';
 		}
 		return {
