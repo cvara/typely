@@ -10,3 +10,4 @@ node_modules
 *.TMP
 mocha
 .babel-cache
+*.map
