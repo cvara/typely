@@ -1,37 +1,23 @@
 import PickerView from 'views/picker';
 import {Model} from 'backbone';
 import VideoView from 'views/media.video';
-import videoPickerTpl from './templates/video.picker';
-import Syphon from 'backbone.syphon';
+import videoPickerTpl from './templates/picker.video';
+
 import {generateSectionUID} from 'common/uid';
 
 const VideoPickerView = PickerView.extend({
 
 	template: videoPickerTpl,
 
-	ui: {
-		'insert': '.js-insert',
-		'cancel': '.js-cancel',
-		'form': 'form'
-	},
-
-	events: _.extend({}, PickerView.prototype.events, {
-		'click @ui.cancel': 'handleCancel',
-		'submit @ui.form': 'handleSubmit'
+	ui: _.extend({}, PickerView.prototype.ui, {
+		// child ui elements go here
 	}),
 
-	stopPropagation: function(e) {
-		e.stopPropagation();
-	},
+	events: _.extend({}, PickerView.prototype.events, {
+		// child events go here
+	}),
 
-	handleCancel: function(e) {
-		e.stopPropagation();
-		this.destroy();
-	},
-
-	handleSubmit: function(e) {
-		e.preventDefault();
-		const data = Syphon.serialize(this);
+	onSubmit: function(data) {
 		this.showVideo(data);
 	},
 
