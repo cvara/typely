@@ -1,4 +1,4 @@
-import {CompositeView} from 'backbone.marionette';
+import Marionette, {CompositeView} from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import _ from 'underscore';
 import {isUrl} from 'common/validators';
@@ -78,10 +78,16 @@ const PickerView = CompositeView.extend({
 	},
 
 	insertMediaView: function(view) {
+		// render view
 		view.render();
 
 		// insert view $el before self
 		this.$el.before(view.$el);
+
+		// manually trigger attach event on view
+		// NOTE: if we don't do it manually here it won't be
+		// fired since the view is not shown inside a Region
+		Marionette.triggerMethodOn(view, 'attach', view);
 
 		// NOTE: this works, even though PickerView
 		// is NOT a child of the EditorView (not rendered

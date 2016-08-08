@@ -1,6 +1,6 @@
-import {ItemView} from 'backbone.marionette';
+import {CompositeView} from 'backbone.marionette';
 
-const MediaView = ItemView.extend({
+const MediaView = CompositeView.extend({
 
 	className: 'post-section media-element',
 

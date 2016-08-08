@@ -1,1 +1,3 @@
-this is a slideshow
+<div class="slider">
+	<ul></ul>
+</div>

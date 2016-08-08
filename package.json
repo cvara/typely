@@ -25,6 +25,7 @@
     "backbone.syphon": "0.6.0",
     "bootstrap": "^3.3.7",
     "jquery": "2.2.4",
+    "jquery-unslider": "^1.2.0",
     "json2": "0.1.0",
     "underscore": "1.8.3"
   },
