@@ -1,4 +1,4 @@
-<iframe width="100%" height="355" src="<%= url %>" frameborder="0"></iframe>
+<iframe src="<%= url %>" frameborder="0"></iframe>
 <span
 	class="caption video-description editable"
 	contenteditable="true"
