@@ -1,55 +1,53 @@
-.typely-tooltip {
+//
+// Typely Tooltip
+// --------------------------------------------------
+//
+// Rules for both tooltips used by typely, that share
+// the same class:
+// 1. the selection tooltip
+// 2. the insert media tooltip
 
+.typely-tooltip {
 	position: absolute;
 	display: inline-block;
 	z-index: @zindex-tooltip;
 	height: @tooltip-toggle-height;
 	.user-select(none);
 	.transition(all 0.2s ease-out 0s);
-
-
 	.tooltip-list {
 		margin: 0;
 		padding: 0;
 		display: inline-block;
-	    background-color: @tooltip-bg;
-	    border-radius: @tooltip-border-radius;
+		background-color: @tooltip-bg;
+		border-radius: @tooltip-border-radius;
 		box-shadow: @tooltip-box-shadow;
-	    list-style-type: none;
-
+		list-style-type: none;
 		> li {
 			float: left;
-		    width: @tooltip-toggle-width;
-		    height: @tooltip-toggle-height;
-		    cursor: pointer;
-		    text-align: center;
+			width: @tooltip-toggle-width;
+			height: @tooltip-toggle-height;
+			cursor: pointer;
+			text-align: center;
 			color: @tooltip-color;
-
 			> i {
 				line-height: @tooltip-toggle-height;
 			}
-
 			&.active {
 				background: @tooltip-bg-active;
 				color: @tooltip-color-active;
 			}
-
 			&:hover {
 				background: @tooltip-bg-hover;
 				color: @tooltip-color-hover;
 			}
-
 			&:last-child {
 				border-radius: 0 5px 5px 0;
 			}
-
 			&:first-child {
 				border-radius: 5px 0 0 5px;
 			}
 		}
-
 	}
-
 	.url-input {
 		background-color: @tooltip-bg;
 		border-radius: @tooltip-border-radius;
@@ -59,44 +57,40 @@
 		padding: 10px 45px 10px 10px;
 		width: 100%;
 		position: relative;
-
 		.close-button {
-		    cursor: pointer;
-		    float: left;
-		    font-size: 12pt;
-		    font-style: normal;
-		    font-weight: 400;
-		    height: 100%;
-		    text-align: center;
-		    width: 45px;
-		    padding-top: 3px;
+			cursor: pointer;
+			float: left;
+			font-size: 12pt;
+			font-style: normal;
+			font-weight: 400;
+			height: 100%;
+			text-align: center;
+			width: 45px;
+			padding-top: 3px;
 			position: absolute;
 			right: 0;
 			top: 0;
 			line-height: @tooltip-toggle-height;
 		}
-
 		.input-field {
-		    font-size: 10pt;
-		    font-style: normal;
-		    font-weight: 400;
-		    background-color: #666666;
-		    border-radius: 5px 5px 5px 5px;
-		    border-style: none;
-		    color: white;
-		    float: left;
-		    height: 100%;
-		    padding: 0 10px;
-		    width: 100%;
+			font-size: 10pt;
+			font-style: normal;
+			font-weight: 400;
+			background-color: #666666;
+			border-radius: 5px 5px 5px 5px;
+			border-style: none;
+			color: white;
+			float: left;
+			height: 100%;
+			padding: 0 10px;
+			width: 100%;
 		}
 	}
-
 	.tooltip-arrow {
-	    height: @tooltip-arrow-size;
-	    width: 100%;
-	    position: absolute;
+		height: @tooltip-arrow-size;
+		width: 100%;
+		position: absolute;
 		top: 100%;
-
 		.icon {
 			width: 0;
 			height: 0;
@@ -105,10 +99,10 @@
 			border-top: @tooltip-arrow-size solid @tooltip-bg;
 			display: inline-block;
 			position: absolute;
-		    top: 0;
-		    left: 0;
-		    right: 0;
-		    margin: auto;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
 		}
 	}
 }

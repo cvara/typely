@@ -1,6 +1,6 @@
 <button class="show-tooltip-button typely-btn typely-btn-default typely-btn-xs">Insert Media</button>
 
-<div class="typely-tooltip tooltip hidden">
+<div class="tooltip hidden">
 	<ul class="tooltip-list media-list">
 		<li data-media-type="image">
 			<i class="icon-image2"></i>

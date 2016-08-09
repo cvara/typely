@@ -1,3 +1,11 @@
+//
+// Typely Buttons
+// --------------------------------------------------
+//
+// We are borrowing styles from bootstrap .btn-* classes
+// to create typely-specific rules in order to avoid
+// conflict with any existing (external) bootstrap css
+
 .typely-btn {
 	display: inline-block;
 	margin-bottom: 0; // For input.btn
@@ -102,4 +110,15 @@
 			text-decoration: none;
 		}
 	}
+}
+.typely-btn-lg {
+	// line-height: ensure even-numbered height of button next to large input
+	.button-size(@padding-large-vertical; @padding-large-horizontal; @font-size-large; @line-height-large; @btn-border-radius-large);
+}
+.typely-btn-sm {
+	// line-height: ensure proper height of button next to small input
+	.button-size(@padding-small-vertical; @padding-small-horizontal; @font-size-small; @line-height-small; @btn-border-radius-small);
+}
+.typely-btn-xs {
+	.button-size(@padding-xs-vertical; @padding-xs-horizontal; @font-size-small; @line-height-small; @btn-border-radius-small);
 }
