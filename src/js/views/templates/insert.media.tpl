@@ -1,4 +1,4 @@
-<div class="show-tooltip-button" contenteditable="false">Insert Media</div>
+<button class="show-tooltip-button typely-btn typely-btn-default typely-btn-xs">Insert Media</button>
 
 <div class="typely-tooltip tooltip hidden">
 	<ul class="tooltip-list media-list">

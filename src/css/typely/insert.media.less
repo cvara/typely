@@ -1,39 +1,21 @@
+//
+// Typely Insert Media Button + Tooltip
+// --------------------------------------------------
+//
+// Rules for the [Insert Media] button that appears in the
+// gutter between sections, plus rules for the tooltip
+// that appears when [Insert Media] is clicked.
+//
+// Only positioning and spacing rules go here, since the
+// tooltip extends .typely-tooltip and the actual insert
+// media button is a typely-btn
+
 .typely-insert-media {
-
-    background-color: white;
-    border-radius: 4px 4px 4px 4px;
-    height: 26px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 95px;
-    z-index: 3;
-	.user-select(none);
-
-	.show-tooltip-button {
-	    border: 1px solid #CCCCCC;
-	    border-radius: 5px 5px 5px 5px;
-	    color: #808080;
-	    cursor: pointer;
-	    font-family: 'Roboto',sans-serif;
-	    font-size: 13px;
-	    font-style: normal;
-	    font-weight: 400;
-	    height: 100%;
-	    padding-top: 1px;
-	    text-align: center;
-	    width: 100%;
-	    .user-select(none);
-
-		&:hover {
-			color: #333333;
-			border: 1px solid #808080;
-		}
-	}
-
-
+	position: absolute;
+	z-index: 3;
 	.tooltip {
-	    bottom: 100%;
+		&:extend(.typely-tooltip all);
+		bottom: 100%;
 		left: 50%;
 		.translate(-50%, 0);
 		margin-bottom: @tooltip-arrow-size;
