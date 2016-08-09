@@ -54,7 +54,7 @@ const PickerView = CompositeView.extend({
 
 	validateInput: function({url, caption}) {
 		let errors = {};
-		if (url!== undefined && !isUrl(url)) {
+		if (url !== undefined && !isUrl(url)) {
 			errors.url = 'Url is invalid';
 		}
 		return {

@@ -23,10 +23,21 @@
 		    margin: 4px 0;
 		    padding: 15px 56px;
 		    position: relative;
+
 			.img-container {
 				height: 100%;
-				[class*="col-"] {
+				position: relative;
+				.thumb, .caption {
 					height: 100%;
+					float: left;
+				}
+				.thumb {
+					width: 80px;
+					position: absolute;
+				}
+				.caption {
+					width: 100%;
+					padding-left: 100px;
 				}
 				img {
 					max-height: 100%;
@@ -42,8 +53,7 @@
 				}
 			}
 
-			.move-img,
-			.delete-img {
+			.img-control {
 			    bottom: 0;
 			    height: 20px;
 				width: 20px;
@@ -51,13 +61,29 @@
 			    position: absolute;
 			    text-align: center;
 			    top: 0;
+				color: @gray-light;
+
+				&.move-img {
+					left: 0;
+				}
+				&.delete-img {
+					right: 0;
+					cursor: pointer;
+					&:hover {
+						color: @brand-danger;
+					}
+				}
 			}
-			.move-img {
-				left: 0;
+
+			&.typely-sortable-placeholder {
+				border: 3px dashed darken(@gray-lighter, 6%);
 			}
-			.delete-img {
-				right: 0;
-				cursor: pointer;
+
+			&:hover {
+				background-color: darken(#f2f2f2, 1%);
+				.img-control {
+					color: @gray-dark;
+				}
 			}
 		}
 	}

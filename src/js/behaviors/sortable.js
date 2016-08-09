@@ -5,6 +5,11 @@ import jquerUI from 'jquery-ui-core'; // should include widgets/sortable.js
 
 const SortableBehavior = Behavior.extend({
 
+	defaults: {
+		placeholder: 'sortable-placeholder',
+		axis: 'y'
+	},
+
     events: {
         'sortupdate': 'onSortUpdate'
     },
@@ -25,6 +30,7 @@ const SortableBehavior = Behavior.extend({
         var options = _.clone(this.options);
         delete options.behaviorClass;
         delete options.html5sortable;
+		console.log(options);
         this.getChildViewContainer().sortable(options); // options are passed to the sortable
     },
 

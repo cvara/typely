@@ -1,0 +1,105 @@
+.typely-btn {
+	display: inline-block;
+	margin-bottom: 0; // For input.btn
+	font-weight: @btn-font-weight;
+	text-align: center;
+	vertical-align: middle;
+	touch-action: manipulation;
+	cursor: pointer;
+	background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+	border: 1px solid transparent;
+	white-space: nowrap;
+	.button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-base; @line-height-base; @btn-border-radius-base);
+	.user-select(none);
+	&,
+	&.active,
+	&:active {
+		&.focus,
+		&:focus {
+			.tab-focus();
+		}
+	}
+	&.focus,
+	&:focus,
+	&:hover {
+		color: @btn-default-color;
+		text-decoration: none;
+	}
+	&.active,
+	&:active {
+		outline: 0;
+		background-image: none;
+		.box-shadow(inset 0 3px 5px rgba(0,0,0,.125));
+	}
+	&.disabled,
+	&[disabled],
+	fieldset[disabled] & {
+		cursor: @cursor-disabled;
+		.opacity(.65);
+		.box-shadow(none);
+	}
+	a & {
+		&.disabled,
+		fieldset[disabled] & {
+			pointer-events: none; // Future-proof disabling of clicks on `<a>` elements
+		}
+	}
+}
+// Alternate buttons
+// --------------------------------------------------
+.typely-btn-default {
+	.button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
+}
+.typely-btn-primary {
+	.button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+}
+// Success appears as green
+.typely-btn-success {
+	.button-variant(@btn-success-color; @btn-success-bg; @btn-success-border);
+}
+// Info appears as blue-green
+.typely-btn-info {
+	.button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
+}
+// Warning appears as orange
+.typely-btn-warning {
+	.button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
+}
+// Danger and error appear as red
+.typely-btn-danger {
+	.button-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
+}
+// Link button
+.typely-btn-link {
+	color: @link-color;
+	font-weight: normal;
+	border-radius: 0;
+	&,
+	&.active,
+	&:active,
+	&[disabled],
+	fieldset[disabled] & {
+		background-color: transparent;
+		.box-shadow(none);
+	}
+	&,
+	&:active,
+	&:focus,
+	&:hover {
+		border-color: transparent;
+	}
+	&:focus,
+	&:hover {
+		color: @link-hover-color;
+		text-decoration: @link-hover-decoration;
+		background-color: transparent;
+	}
+	&[disabled],
+	fieldset[disabled] & {
+		&:focus,
+		&:hover {
+			color: @btn-link-disabled-color;
+			text-decoration: none;
+		}
+	}
+}

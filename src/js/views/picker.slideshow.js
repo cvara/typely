@@ -56,7 +56,8 @@ const SlideshowPickerView = PickerView.extend({
 	behaviors: {
 	    Sortable: {
 	        behaviorClass: SortableBehavior,
-	        html5sortable: false // Required when using HTML5 Sortable.
+	        html5sortable: false, // Required when using HTML5 Sortable.
+			placeholder: 'typely-sortable-placeholder'
 	    }
 	},
 
