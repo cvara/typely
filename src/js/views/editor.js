@@ -4,6 +4,7 @@ import TooltipView from 'views/tooltip';
 import InsertMediaView from 'views/insert.media';
 import VideoPickerView from 'views/picker.video';
 import SlideshowPickerView from 'views/picker.slideshow';
+import EmbedPickerView from 'views/picker.embed';
 import editorTpl from './templates/editor';
 import helper from 'common/helper';
 import Cocktail from 'backbone.cocktail';
@@ -74,8 +75,8 @@ const Editor = LayoutView.extend({
 	// the region-related view management that is built in Marionette.
 	mediaPickerViewConstructors: {
 		video: VideoPickerView,
-		audio: null,
-		slideshow: SlideshowPickerView
+		slideshow: SlideshowPickerView,
+		embed: EmbedPickerView
 	},
 
 	initialize: function(options) {

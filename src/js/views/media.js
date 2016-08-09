@@ -3,7 +3,8 @@ import {CompositeView} from 'backbone.marionette';
 const MediaView = CompositeView.extend({
 
 	className: 'post-section media-element',
-
+	tagName: 'p',
+	
 	attributes: function() {
 		return {
 			name: this.getOption('name'),

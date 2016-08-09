@@ -15,7 +15,6 @@ const SlideshowItemView = ItemView.extend({
 
 const SlideshowView = MediaView.extend({
 
-	tagName: 'p',
 	template: slideshowTpl,
 
 	// parent is a CompositeView

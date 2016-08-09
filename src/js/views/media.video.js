@@ -7,8 +7,6 @@ import {notify} from 'common/notify';
 
 const VideoView = MediaView.extend({
 
-	tagName: 'p',
-
 	getTemplate: function() {
 		const provider = this.getOption('provider');
 		if (provider === 'youtube') {
@@ -24,7 +22,6 @@ const VideoView = MediaView.extend({
 		});
 		return iframeTpl;
 	}
-
 });
 
 export default VideoView;

@@ -5,14 +5,14 @@
 		<li data-media-type="image">
 			<i class="icon-image2"></i>
 		</li>
-		<li data-media-type="video">
-			<i class="icon-video-camera2"></i>
-		</li>
 		<li data-media-type="slideshow">
 			<i class="icon-images2"></i>
 		</li>
-		<li data-media-type="audio">
-			<i class="icon-volume-medium"></i>
+		<li data-media-type="video">
+			<i class="icon-video-camera2"></i>
+		</li>
+		<li data-media-type="embed">
+			<i class="icon-embed2"></i>
 		</li>
 	</ul>
 
