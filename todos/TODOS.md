@@ -1,0 +1,4 @@
+- [ ] media caption placeholder behavior
+- [ ] store user input in model
+- [ ] getter that fetches json/pojo representation of said model
+- [ ] restore editor state based on model passed on init
