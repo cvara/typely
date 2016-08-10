@@ -1,10 +1,18 @@
 import {CompositeView} from 'backbone.marionette';
+import CaptionPlaceholderBehavior from 'behaviors/caption.placeholder';
+
 
 const MediaView = CompositeView.extend({
 
 	className: 'post-section media-element',
 	tagName: 'p',
-	
+
+	behaviors: {
+		CaptionPlaceholder: {
+			behaviorClass: CaptionPlaceholderBehavior
+		}
+	},
+
 	attributes: function() {
 		return {
 			name: this.getOption('name'),

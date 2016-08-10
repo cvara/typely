@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import MediaView from 'views/media';
 import imageTpl from './templates/image';
+import CaptionPlaceholderBehavior from 'behaviors/caption.placeholder';
+
 
 const ImageView = MediaView.extend({
 

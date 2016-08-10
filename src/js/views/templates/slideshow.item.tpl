@@ -3,7 +3,7 @@
 	<figcaption
 		class="caption editable"
 		contenteditable="true"
-		data-empty="<%= caption.length === 0 ? 'true' : 'false' %>">
+		data-caption-placeholder="<%= captionPlaceholder %>">
 		<%= caption || captionPlaceholder %>
 	</figcaption>
 </figure>

@@ -5,12 +5,19 @@ import slideshowTpl from './templates/slideshow';
 import slideshowItemTpl from './templates/slideshow.item';
 import {notify} from 'common/notify';
 import SlideableBehavior from 'behaviors/slideable';
+import CaptionPlaceholderBehavior from 'behaviors/caption.placeholder';
 
 
 const SlideshowItemView = ItemView.extend({
 	template: slideshowItemTpl,
 	tagName: 'li',
-	className: 'slider-content'
+	className: 'slider-content',
+
+	behaviors: {
+		CaptionPlaceholder: {
+			behaviorClass: CaptionPlaceholderBehavior
+		}
+	}
 });
 
 const SlideshowView = MediaView.extend({
