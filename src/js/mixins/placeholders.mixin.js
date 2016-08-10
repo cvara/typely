@@ -15,8 +15,8 @@ export default {
 	},
 
 	events: {
-		'blur @ui.placeholder'     : 'handlePlaceholderBlur',
-		'click @ui.placeholder'    : 'handlePlaceholderClick'
+		'blur @ui.placeholder'  : 'handlePlaceholderBlur',
+		'click @ui.placeholder' : 'handlePlaceholderClick'
 	},
 
 	onAttach: function() {
@@ -78,6 +78,9 @@ export default {
 	},
 
 	handlePlaceholderBlur: function(e) {
+		if (e.target !== e.currentTarget) {
+			return;
+		}
 		let placeholder = $(e.currentTarget);
 		let which = placeholder.attr('data-placeholder');
 
@@ -91,6 +94,15 @@ export default {
 	},
 
 	handlePlaceholderClick: function(e) {
+		// Verify that initiator of the click is the first .post-section child of the placeholder
+		// NOTE: this is important since clicks may have bubbled up from other elements inside
+		// the placeholder (i.e. a media picker or a media caption placeholder). Adding this
+		// guard we avoid handling clicks that we shouldn't
+		let initiator = $(e.target);
+		if (!initiator.attr('data-placeholder') && !initiator.is('p.post-section:first-child')) {
+			console.log('I am not inside a placeholder, exiting...');
+			return true;
+		}
 		this.registerHandlers();
 		this.focusAndEmpty(e);
 	},
@@ -103,19 +115,6 @@ export default {
 	},
 
 	focusAndEmpty: function(e) {
-		let initiator = $(e.target);
-		// console.log(e);
-		// console.log('Am I the first child? ', $target.is('p.post-section:first-child'));
-		// if click was triggered from inside a non-section (i.e. slideshow picker)
-		if (!initiator.attr('data-placeholder') && !initiator.is('p.post-section:first-child')) {
-			// console.log('I am not inside a placeholder, exiting...');
-			return true;
-		}
-		// // if click was triggered from inside a non-section (i.e. slideshow picker)
-		// if ($target.closest('.non-section').length > 0) {
-		// 	return true;
-		// }
-
 		let placeholder = $(e.currentTarget);
 
 		let focusEl;
