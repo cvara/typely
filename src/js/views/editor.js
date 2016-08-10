@@ -14,7 +14,7 @@ import PlaceholdersMixin from 'mixins/placeholders.mixin';
 import SectionsMixin from 'mixins/sections.mixin';
 import rangy from 'rangy-core';
 import rangySelection from 'rangy-selection';
-
+import 'backbone.stickit';
 
 const Editor = LayoutView.extend({
 
@@ -82,6 +82,34 @@ const Editor = LayoutView.extend({
 	initialize: function(options) {
 		this.maxFileSize = this.getOption('maxFileSize');
 		this.allowTrailingMedia = this.getOption('allowTrailingMedia');
+	},
+
+	bindings: {
+	    '.post-title': {
+			observe: 'title',
+			updateMethod: 'html',
+		    onSet: function(value) {
+		        return value;
+		    }
+		},
+	    '.post-subtitle': {
+			observe: 'subtitle',
+			updateMethod: 'html',
+		    onSet: function(value) {
+		        return value;
+		    }
+		},
+	    '.post-content': {
+			observe: 'content',
+			updateMethod: 'html',
+		    onSet: function(value) {
+		        return value;
+		    }
+		}
+	},
+
+	onRender: function() {
+		this.stickit();
 	},
 
 	onBeforeShow: function() {
@@ -666,6 +694,8 @@ const Editor = LayoutView.extend({
 		if (this.isLast(mediaView.$el)) {
 			this.createEmptySection(mediaView.$el, false);
 		}
+		// manually trigger input for backbone.stickit to do its thing
+		this.ui.content.trigger('input');
 	},
 
 	storeMediaView: function(view) {
