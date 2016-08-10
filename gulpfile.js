@@ -18,7 +18,6 @@ var webpackConfig = require('./webpack.config');
 var connect = require('gulp-connect');
 var preprocess = require('gulp-preprocess');
 var less = require('gulp-less');
-var inlinesource = require('gulp-inline-source');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var uglify = require('gulp-uglify');
@@ -91,7 +90,7 @@ gulp.task('webpack', function() {
 		.pipe(connect.reload());
 });
 
-// Uglify bundle
+// Uglify bundle (webpack output)
 gulp.task('uglifyBundle', function() {
 	return gulp.src(dist + '/js/**/*.js')
 		.pipe(uglify())
@@ -121,6 +120,7 @@ gulp.task('clean', function(cb) {
 	del([dist], cb);
 });
 
+// Lint
 gulp.task('lint', function() {
     return gulp.src([
 			source + '/js/**/*.js',
@@ -129,13 +129,6 @@ gulp.task('lint', function() {
 	    .pipe(jshint())
 	    .pipe(jshint.reporter(stylish));
 });
-
-// Build (base build tasks, for dev)
-gulp.task('build', function(callback) {
-	var start = new Date().getTime();
-	runSequence('clean', 'webpack', 'styles', 'fonts', 'images', callback);
-});
-
 
 // Watch
 gulp.task('watch', function() {
@@ -151,6 +144,12 @@ gulp.task('watch', function() {
 
 	// Watch font files
 	gulp.watch(source + '/fonts/**/*', ['fonts']);
+});
+
+// Build (base build tasks, for dev)
+gulp.task('build', function(callback) {
+	var start = new Date().getTime();
+	runSequence('clean', 'webpack', 'styles', 'fonts', 'images', callback);
 });
 
 // Run in dev mode with static pages
