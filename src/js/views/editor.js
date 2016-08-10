@@ -416,10 +416,6 @@ const Editor = LayoutView.extend({
 
 
 	handleMouseupOnContent: function(e) {
-		// in case the user is trying to drop a sortable element with mouseup
-		if($('.ui-sortable-placeholder').length > 0) {
-			return true;
-		}
 		var parentEl = helper.getSelectionParentElement();
 		// check if the selection lies inside the post-content
 		if ($(parentEl).closest('.post-content').length === 0) {
