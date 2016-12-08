@@ -24,7 +24,6 @@
     "backbone.stickit": "^0.9.2",
     "backbone.syphon": "^0.6.3",
     "jquery": "2.2.4",
-    "jquery-unslider": "^1.2.0",
     "underscore": "1.8.3"
   },
   "devDependencies": {

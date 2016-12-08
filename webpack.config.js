@@ -64,6 +64,7 @@ module.exports = {
 		],
 		extensions: ['', '.js', '.tpl'],
 		alias: {
+			'jquery-unslider'          : 'vendor/unslider-min',
 			'jquery-easing'            : 'vendor/jquery.easing',
 			pnotify                    : 'vendor/pnotify.core',
 			'pnotify.buttons'          : 'vendor/pnotify.buttons',
